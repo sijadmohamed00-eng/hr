@@ -11,7 +11,7 @@
 <meta name="theme-color" content="#0a0c14">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon.png">
-<title> حضور قسم البيجات  </title>
+<title>👑 سندريلا — نظام الكول سنتر v4</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
@@ -49,6 +49,7 @@ html,body{height:100%;font-family:'Cairo',sans-serif;background:var(--bg);color:
 .topbar{background:var(--bg2);border-bottom:1px solid var(--br);padding:10px 18px;display:flex;align-items:center;gap:12px;z-index:10;flex-shrink:0;min-height:56px}
 .tb-brand{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
 .tb-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.tb-icon-img{width:36px;height:36px;border-radius:10px;object-fit:cover;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,.4)}
 .tb-brand h1{font-size:15px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tb-brand span{font-size:11px;color:var(--t2);display:none}
 @media(min-width:600px){.tb-brand span{display:block}}
@@ -71,7 +72,7 @@ html,body{height:100%;font-family:'Cairo',sans-serif;background:var(--bg);color:
 .sidebar{width:200px;background:var(--bg2);border-left:1px solid var(--br);padding:12px 8px;overflow-y:auto;flex-shrink:0;display:none}
 @media(min-width:768px){.sidebar{display:block}}
 .stitle{font-size:10px;color:var(--t3);letter-spacing:1px;text-transform:uppercase;padding:6px 8px 10px;font-weight:700}
-.sitem{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:10px;cursor:pointer;font-size:13px;color:var(--t2);transition:.15s;margin-bottom:2px;user-select:none}
+/* .sitem redefined with position:relative above */
 .sitem:hover{background:var(--bg3);color:var(--t1)}
 .sitem.active{background:rgba(240,192,64,.12);color:var(--gold);font-weight:700}
 .ico{font-size:15px}
@@ -81,7 +82,7 @@ html,body{height:100%;font-family:'Cairo',sans-serif;background:var(--bg);color:
 .mobile-nav::-webkit-scrollbar-track{background:var(--bg3)}
 .mobile-nav::-webkit-scrollbar-thumb{background:var(--br2);border-radius:4px}
 @media(min-width:768px){.mobile-nav{display:none}}
-.mnav-item{scroll-snap-align:start;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 8px;border-radius:8px;cursor:pointer;font-size:9px;color:var(--t2);transition:.15s;white-space:nowrap;min-width:48px;flex-shrink:0}
+/* .mnav-item redefined with position:relative above */
 .mnav-item:hover,.mnav-item.active{background:rgba(240,192,64,.12);color:var(--gold)}
 .mnav-icon{font-size:17px}
 /* MAIN */
@@ -374,6 +375,12 @@ textarea.fi{resize:vertical;min-height:80px}
 .smart-alert{position:fixed;top:60px;left:50%;transform:translateX(-50%);z-index:8000;background:linear-gradient(135deg,rgba(240,192,64,.95),rgba(255,171,64,.95));color:#1a1200;border-radius:12px;padding:12px 20px;font-size:13px;font-weight:800;box-shadow:0 8px 32px rgba(0,0,0,.4);animation:toastIn .3s ease;white-space:nowrap;max-width:90vw;text-align:center}
 /* LEAVE BADGE */
 .notif-badge{position:absolute;top:-4px;right:-4px;background:var(--red);color:#fff;border-radius:50%;width:16px;height:16px;font-size:9px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.nav-cnt{display:inline-flex;align-items:center;justify-content:center;background:var(--red);color:#fff;border-radius:10px;min-width:18px;height:18px;font-size:10px;font-weight:800;padding:0 4px;margin-right:auto;margin-left:4px;line-height:1}
+.nav-cnt:empty,.nav-cnt[data-v="0"]{display:none}
+.sitem{position:relative;display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:10px;cursor:pointer;font-size:13px;color:var(--t2);transition:.15s;margin-bottom:2px;user-select:none}
+.mnav-item{scroll-snap-align:start;position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 8px;border-radius:8px;cursor:pointer;font-size:9px;color:var(--t2);transition:.15s;white-space:nowrap;min-width:48px;flex-shrink:0}
+.mnav-dot{position:absolute;top:4px;right:6px;background:var(--red);color:#fff;border-radius:10px;min-width:16px;height:16px;font-size:9px;font-weight:800;padding:0 3px;display:flex;align-items:center;justify-content:center;line-height:1}
+.mnav-dot[data-v="0"],.mnav-dot:empty{display:none}
 /* REPLY MSG */
 .msg-reply{background:rgba(0,229,255,.06);border:1px solid rgba(0,229,255,.15);border-radius:12px;padding:14px;margin-bottom:10px}
 .msg-reply .msg-name{color:var(--cyan)}
@@ -737,7 +744,7 @@ textarea.fi{resize:vertical;min-height:80px}
 <div class="screen" id="adminScreen">
   <div class="topbar">
     <div class="tb-brand">
-      <div class="tb-icon" style="background:linear-gradient(135deg,var(--gold),#ffab40)">👑</div>
+      <img src="icon.png" class="tb-icon-img" alt="سندريلا" onerror="this.style.display='none';this.nextSibling.style.display='flex'"><div class="tb-icon" style="background:linear-gradient(135deg,var(--gold),#ffab40);display:none">👑</div>
       <div><h1>سندريلا | لوحة التحكم</h1><span>بغداد — شارع فلسطين</span></div>
     </div>
     <div class="tb-right">
@@ -765,11 +772,11 @@ textarea.fi{resize:vertical;min-height:80px}
       <div class="sitem" onclick="showATab('inc',this)"><span class="ico">🎁</span>الحوافز</div>
       <div class="sitem" onclick="showATab('sh',this)"><span class="ico">🕐</span>الشفتات</div>
       <div class="sitem" onclick="showATab('rate',this)"><span class="ico">⭐</span>التقييمات</div>
-      <div class="sitem" onclick="showATab('leave',this)"><span class="ico">🌴</span>طلبات الإجازة</div>
-      <div class="sitem" onclick="showATab('loans',this)"><span class="ico">💳</span>طلبات السلف</div>
+      <div class="sitem" onclick="showATab('leave',this)"><span class="ico">🌴</span>طلبات الإجازة<span class="nav-cnt" id="sideLeaveCount" data-v="0"></span></div>
+      <div class="sitem" onclick="showATab('loans',this)"><span class="ico">💳</span>طلبات السلف<span class="nav-cnt" id="sideLoanCount" data-v="0"></span></div>
       <div class="sitem" onclick="showATab('arch',this)"><span class="ico">🗄️</span>الأرشيف</div>
       <div class="sitem" onclick="showATab('rep',this)"><span class="ico">📋</span>التقارير</div>
-      <div class="sitem" onclick="showATab('msg',this)"><span class="ico">💬</span>الرسائل</div>
+      <div class="sitem" onclick="showATab('msg',this)"><span class="ico">💬</span>الرسائل<span class="nav-cnt" id="sideMsgCount" data-v="0"></span></div>
       <div class="sitem" onclick="showATab('logs',this)"><span class="ico">📝</span>سجل العمليات</div>
       <div class="sitem" onclick="showATab('sales',this)"><span class="ico">📦</span>إحصائيات المبيعات</div>
       <div class="sitem" onclick="showATab('map',this)"><span class="ico">🗺️</span>خريطة الموظفين</div>
@@ -828,6 +835,35 @@ textarea.fi{resize:vertical;min-height:80px}
     <div><h2>📍 سجل الحضور</h2></div>
     <button class="btn btn-ok btn-sm" onclick="exportAttExcel()">📊 تصدير Excel</button>
   </div>
+
+  <!-- ✅ تسجيل حضور يدوي -->
+  <div class="card mb16" style="border-color:rgba(0,230,118,.25);background:linear-gradient(135deg,rgba(0,230,118,.04),transparent)">
+    <div class="ch"><h3 style="color:var(--green)">✏️ تسجيل حضور يدوي</h3><span class="cbadge" style="background:rgba(0,230,118,.1);color:var(--green)">من صلاحية المدير</span></div>
+    <div class="cb">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+        <div class="fg"><label>الموظف</label>
+          <select class="fi" id="manAttEmp"></select>
+        </div>
+        <div class="fg"><label>التاريخ</label>
+          <input type="date" class="fi" id="manAttDate">
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+        <div class="fg"><label>وقت الدخول</label>
+          <input type="time" class="fi" id="manAttCiTime" value="09:00">
+        </div>
+        <div class="fg"><label>وقت الخروج (اختياري)</label>
+          <input type="time" class="fi" id="manAttCoTime" value="18:00">
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+        <button class="btn btn-ok" onclick="adminManualAtt()" style="flex:1;min-width:140px">✅ تسجيل الحضور</button>
+        <button class="btn btn-sc btn-sm" onclick="adminManualAttMulti()" style="flex:1;min-width:140px">📅 تسجيل أيام متعددة</button>
+      </div>
+      <div id="manAttFeedback" style="margin-top:10px;font-size:12px;color:var(--green);display:none"></div>
+    </div>
+  </div>
+
   <div class="filter-row">
     <input type="text" class="fi" id="attSearch" placeholder="🔍 بحث..." oninput="renderAdminAtt()">
     <input type="date" class="fi" style="max-width:165px" id="attDate" onchange="renderAdminAtt()">
@@ -1200,11 +1236,11 @@ textarea.fi{resize:vertical;min-height:80px}
       <div class="mnav-item" onclick="showATab('inc',this)"><div class="mnav-icon">🎁</div><span>الحوافز</span></div>
       <div class="mnav-item" onclick="showATab('sh',this)"><div class="mnav-icon">🕐</div><span>الشفتات</span></div>
       <div class="mnav-item" onclick="showATab('rate',this)"><div class="mnav-icon">⭐</div><span>تقييم</span></div>
-      <div class="mnav-item" onclick="showATab('leave',this)"><div class="mnav-icon">🌴</div><span>إجازات</span></div>
-      <div class="mnav-item" onclick="showATab('loans',this)"><div class="mnav-icon">💳</div><span>سلف</span></div>
+      <div class="mnav-item" onclick="showATab('leave',this)"><div class="mnav-icon">🌴</div><span>إجازات</span><span class="mnav-dot" id="mnavLeaveCount"></span></div>
+      <div class="mnav-item" onclick="showATab('loans',this)"><div class="mnav-icon">💳</div><span>سلف</span><span class="mnav-dot" id="mnavLoanCount"></span></div>
       <div class="mnav-item" onclick="showATab('arch',this)"><div class="mnav-icon">🗄️</div><span>الأرشيف</span></div>
       <div class="mnav-item" onclick="showATab('rep',this)"><div class="mnav-icon">📋</div><span>التقارير</span></div>
-      <div class="mnav-item" onclick="showATab('msg',this)"><div class="mnav-icon">✉️</div><span>الرسائل</span></div>
+      <div class="mnav-item" onclick="showATab('msg',this)"><div class="mnav-icon">✉️</div><span>الرسائل</span><span class="mnav-dot" id="mnavMsgCount"></span></div>
       <div class="mnav-item" onclick="showATab('logs',this)"><div class="mnav-icon">📝</div><span>لوج</span></div>
       <div class="mnav-item" onclick="showATab('sales',this)"><div class="mnav-icon">📦</div><span>المبيعات</span></div>
       <div class="mnav-item" onclick="showATab('map',this)"><div class="mnav-icon">🗺️</div><span>الخريطة</span></div>
@@ -1218,6 +1254,30 @@ textarea.fi{resize:vertical;min-height:80px}
 </div>
 
 <!-- ═══ MODALS ═══ -->
+
+<!-- Manual Multi-Day Attendance Modal -->
+<div class="mov" id="manAttMultiModal">
+  <div class="modal" style="max-width:440px">
+    <div class="mh"><h3>📅 تسجيل أيام حضور متعددة</h3><button class="mx" onclick="closeModal('manAttMultiModal')">✕</button></div>
+    <div class="mb">
+      <div class="fg"><label>الموظف</label><div id="manAttMultiEmpName" style="font-size:15px;font-weight:800;color:var(--gold);padding:8px 0"></div></div>
+      <div style="font-size:12px;color:var(--t2);margin-bottom:12px">اختر الأيام التي تريد تسجيل حضور بها — الأيام المسجلة مسبقاً لن تُكرر</div>
+      <div id="manAttMultiDaysList" style="max-height:320px;overflow-y:auto;display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px"></div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+        <div class="fg" style="flex:1;margin:0"><label>وقت الدخول</label><input type="time" class="fi" id="manAttMultiCi" value="09:00"></div>
+        <div class="fg" style="flex:1;margin:0"><label>وقت الخروج</label><input type="time" class="fi" id="manAttMultiCo" value="18:00"></div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-sc btn-sm" onclick="selectAllMultiDays()" style="flex:1">تحديد الكل</button>
+        <button class="btn btn-sc btn-sm" onclick="clearAllMultiDays()" style="flex:1">إلغاء الكل</button>
+      </div>
+    </div>
+    <div class="mf">
+      <button class="btn btn-ok" onclick="confirmManualAttMulti()" style="flex:1">✅ تسجيل الأيام المحددة</button>
+      <button class="btn btn-sc" onclick="closeModal('manAttMultiModal')">إلغاء</button>
+    </div>
+  </div>
+</div>
 
 <!-- Add Employee -->
 
@@ -2647,6 +2707,7 @@ function renderAdmin(){
     const _lb=document.getElementById('loanPendingCount');
     if(_lb)_lb.textContent=_loans.filter(l=>l.status==='pending').length;
   }catch(e){}
+  try{updatePendingBadges();}catch(e){}
 }
 
 function renderQuickAtt(emps,att,today){
@@ -3669,7 +3730,7 @@ function respondLeave(id,status){
     sendTg(`❌ تم رفض طلب إجازة ${r.ename}\nالتاريخ: ${fmtD(r.date)}`);
   }
   addAdminLog('leave_'+status,`${status==='approved'?'موافقة':'رفض'} إجازة ${r.ename}`,{date:r.date});
-  renderLeaveRequests();renderAdmin();
+  renderLeaveRequests();renderAdmin();updatePendingBadges();
   showToast(status==='approved'?'✅ تمت الموافقة':'❌ تم الرفض','s');
 }
 
@@ -4616,7 +4677,7 @@ function approveLoan(id){
   DB.set('loanRequests',loans);
   addAdminLog('loan_approve',`موافقة سلفة: ${loan.ename} — ${fmtN(loan.amount)} د.ع`,{eid:loan.eid,amount:loan.amount});
   sendTg(`✅ موافقة سلفة\n👤 ${loan.ename}\n💰 ${fmtN(loan.amount)} د.ع\n📌 ستُخصم من الراتب`);
-  renderAdminLoans(); renderAdmin();
+  renderAdminLoans(); renderAdmin(); updatePendingBadges();
   showToast(`✅ تمت الموافقة — خُصمت ${fmtN(loan.amount)} د.ع من راتب ${loan.ename}`,'s');
 }
 
@@ -4630,7 +4691,7 @@ function rejectLoan(id){
   loans[i].rejectedAt=new Date().toISOString();
   DB.set('loanRequests',loans);
   sendTg(`❌ رفض سلفة\n👤 ${loans[i].ename}\n💰 ${fmtN(loans[i].amount)} د.ع${reason?'\n📝 '+reason:''}`);
-  renderAdminLoans();
+  renderAdminLoans(); updatePendingBadges();
   showToast('تم الرفض','i');
 }
 
@@ -4859,6 +4920,186 @@ document.addEventListener('DOMContentLoaded',()=>{
     console.log('PWA ready');
   });
 
+// ══════════════════════════════════════════════════════
+//  PENDING BADGES — أرقام الإشعارات على الخانات
+// ══════════════════════════════════════════════════════
+function updatePendingBadges(){
+  // إجازات معلقة
+  const leaves=(DB.get('leaveRequests')||[]).filter(r=>r.status==='pending').length;
+  _setBadge('sideLeaveCount', leaves);
+  _setBadge('mnavLeaveCount', leaves);
+
+  // سلف معلقة
+  const loans=(DB.get('loanRequests')||[]).filter(l=>l.status==='pending').length;
+  _setBadge('sideLoanCount', loans);
+  _setBadge('mnavLoanCount', loans);
+
+  // رسائل غير مقروءة (من الموظفين للمدير)
+  const msgs=(DB.get('empToAdminMsg')||[]).filter(m=>!m.readByAdmin).length;
+  // أيضاً رسائل الدردشة الجماعية غير المقروءة
+  const lastSeen=parseInt(localStorage.getItem('groupchatLastSeen')||'0');
+  const chatMsgs=(DB.get('groupchat')||[]).filter(m=>m.uid!=='admin'&&new Date(m.ts).getTime()>lastSeen).length;
+  const totalMsgs=msgs+chatMsgs;
+  _setBadge('sideMsgCount', totalMsgs);
+  _setBadge('mnavMsgCount', totalMsgs);
+}
+
+function _setBadge(id, count){
+  const el=document.getElementById(id);
+  if(!el)return;
+  if(count>0){
+    el.textContent=count>99?'99+':count;
+    el.style.display='';
+  } else {
+    el.textContent='';
+    el.style.display='none';
+  }
+}
+
+// تحديث الـ badges كل 30 ثانية تلقائياً
+setInterval(()=>{try{updatePendingBadges();}catch(e){}}, 30000);
+
+// ══════════════════════════════════════════════════════
+//  MANUAL ATTENDANCE — تسجيل حضور يدوي من المدير
+// ══════════════════════════════════════════════════════
+
+function _populateManAttEmps(){
+  const sel=document.getElementById('manAttEmp'); if(!sel)return;
+  const emps=DB.get('emps')||[];
+  sel.innerHTML=emps.map(e=>`<option value="${e.id}">${e.name}</option>`).join('');
+}
+
+// تسجيل يوم واحد
+function adminManualAtt(){
+  const empId=document.getElementById('manAttEmp')?.value;
+  const date=document.getElementById('manAttDate')?.value;
+  const ciTime=document.getElementById('manAttCiTime')?.value||'09:00';
+  const coTime=document.getElementById('manAttCoTime')?.value||'18:00';
+  if(!empId||!date){showToast('اختر الموظف والتاريخ','e');return;}
+
+  const emps=DB.get('emps')||[];
+  const emp=emps.find(e=>e.id===empId);
+  if(!emp){showToast('الموظف غير موجود','e');return;}
+
+  const att=DB.get('att')||[];
+
+  // تحقق إذا مسجل مسبقاً
+  const exists=att.some(a=>a.eid===empId&&a.date===date&&a.type==='ci');
+  if(exists){
+    showToast(`⚠️ ${emp.name} مسجل حضور بتاريخ ${date} مسبقاً`,'e');
+    return;
+  }
+
+  const ciTs=new Date(date+'T'+ciTime+':00').toISOString();
+  const coTs=new Date(date+'T'+coTime+':00').toISOString();
+  const durMins=Math.round((new Date(coTs)-new Date(ciTs))/60000);
+
+  att.push({id:genId(),eid:empId,ename:emp.name,type:'ci',date,time:ciTime,ts:ciTs,lat:0,lng:0,dist:0,manual:true,byAdmin:true});
+  att.push({id:genId(),eid:empId,ename:emp.name,type:'co',date,time:coTime,ts:coTs,lat:0,lng:0,dist:0,durMins,manual:true,byAdmin:true});
+  DB.set('att',att);
+
+  addAdminLog('manual_att',`تسجيل حضور يدوي: ${emp.name} — ${date}`,{eid:empId,date});
+
+  const fb=document.getElementById('manAttFeedback');
+  if(fb){fb.textContent=`✅ تم تسجيل حضور ${emp.name} بتاريخ ${date} (${ciTime} – ${coTime})`;fb.style.display='block';setTimeout(()=>{fb.style.display='none';},4000);}
+
+  showToast(`✅ تم تسجيل حضور ${emp.name}`,'s');
+  renderAdminAtt();
+  renderAdmin();
+}
+
+// فتح modal الأيام المتعددة
+function adminManualAttMulti(){
+  const empId=document.getElementById('manAttEmp')?.value;
+  if(!empId){showToast('اختر موظفاً أولاً','e');return;}
+  const emps=DB.get('emps')||[];
+  const emp=emps.find(e=>e.id===empId);
+  if(!emp)return;
+
+  document.getElementById('manAttMultiEmpName').textContent=emp.name;
+
+  // بناء قائمة أيام الفترة الحالية
+  const per=getPeriod();
+  const att=DB.get('att')||[];
+  const ps=per.start.toISOString().split('T')[0];
+  const pe=per.end.toISOString().split('T')[0];
+  const registeredDays=new Set(att.filter(a=>a.eid===empId&&a.type==='ci').map(a=>a.date));
+
+  const today=todayStr();
+  const days=[];
+  let cur=new Date(ps+'T00:00:00');
+  const end=new Date(pe+'T00:00:00');
+  while(cur<=end&&cur.toISOString().split('T')[0]<=today){
+    days.push(cur.toISOString().split('T')[0]);
+    cur.setDate(cur.getDate()+1);
+  }
+
+  const container=document.getElementById('manAttMultiDaysList');
+  container.innerHTML=days.map(d=>{
+    const isReg=registeredDays.has(d);
+    const dayName=new Date(d+'T00:00:00').toLocaleDateString('ar-IQ',{weekday:'short',day:'numeric',month:'numeric'});
+    return`<label style="display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;cursor:${isReg?'default':'pointer'};background:${isReg?'rgba(0,230,118,.08)':'var(--bg3)'};border:1px solid ${isReg?'rgba(0,230,118,.3)':'var(--br)'};opacity:${isReg?'0.6':'1'}">
+      <input type="checkbox" value="${d}" ${isReg?'checked disabled':''} style="accent-color:var(--green);width:15px;height:15px">
+      <span style="font-size:12px;${isReg?'color:var(--green)':''}">${dayName}${isReg?' ✅':''}</span>
+    </label>`;
+  }).join('');
+
+  // store empId on modal
+  document.getElementById('manAttMultiModal').dataset.eid=empId;
+  openModal('manAttMultiModal');
+}
+
+function selectAllMultiDays(){
+  document.querySelectorAll('#manAttMultiDaysList input[type=checkbox]:not(:disabled)').forEach(cb=>cb.checked=true);
+}
+function clearAllMultiDays(){
+  document.querySelectorAll('#manAttMultiDaysList input[type=checkbox]:not(:disabled)').forEach(cb=>cb.checked=false);
+}
+
+function confirmManualAttMulti(){
+  const empId=document.getElementById('manAttMultiModal').dataset.eid;
+  const ciTime=document.getElementById('manAttMultiCi')?.value||'09:00';
+  const coTime=document.getElementById('manAttMultiCo')?.value||'18:00';
+  const selected=[...document.querySelectorAll('#manAttMultiDaysList input[type=checkbox]:not(:disabled):checked')].map(cb=>cb.value);
+
+  if(!selected.length){showToast('ما اخترت أي يوم','e');return;}
+
+  const emps=DB.get('emps')||[];
+  const emp=emps.find(e=>e.id===empId);
+  if(!emp)return;
+
+  let att=DB.get('att')||[];
+  let added=0;
+  selected.forEach(date=>{
+    const exists=att.some(a=>a.eid===empId&&a.date===date&&a.type==='ci');
+    if(exists)return;
+    const ciTs=new Date(date+'T'+ciTime+':00').toISOString();
+    const coTs=new Date(date+'T'+coTime+':00').toISOString();
+    const durMins=Math.round((new Date(coTs)-new Date(ciTs))/60000);
+    att.push({id:genId(),eid:empId,ename:emp.name,type:'ci',date,time:ciTime,ts:ciTs,lat:0,lng:0,dist:0,manual:true,byAdmin:true});
+    att.push({id:genId(),eid:empId,ename:emp.name,type:'co',date,time:coTime,ts:coTs,lat:0,lng:0,dist:0,durMins,manual:true,byAdmin:true});
+    added++;
+  });
+  DB.set('att',att);
+  addAdminLog('manual_att_multi',`تسجيل حضور يدوي متعدد: ${emp.name} — ${added} أيام`,{eid:empId,count:added});
+  closeModal('manAttMultiModal');
+  showToast(`✅ تم تسجيل ${added} يوم حضور لـ ${emp.name}`,'s');
+  renderAdminAtt();
+  renderAdmin();
+}
+
+// تعبئة قائمة الموظفين عند فتح تاب الحضور
+const _origShowATab=window.showATab;
+window.showATab=function(id,el){
+  _origShowATab&&_origShowATab(id,el);
+  if(id==='att'){
+    _populateManAttEmps();
+    // تعيين اليوم الحالي كافتراضي
+    const di=document.getElementById('manAttDate');
+    if(di&&!di.value)di.value=todayStr();
+  }
+};
+
 </script>
 
 <!-- Sub-Admin Modal -->
@@ -5040,6 +5281,6 @@ document.addEventListener('DOMContentLoaded',()=>{
   border-top:1px solid rgba(255,255,255,0.08);
   background:rgba(255,255,255,0.02)
 ">
-  ©️ 2026 جميع الحقوق محفوظة - <span style="color:#f5a623;font-weight:700">سجاد محمد</span> 
+  ©️ 2026 جميع الحقوق محفوظة - <span style="color:#f5a623;font-weight:700">سجاد محمد</span> | النسخة v4 — 2026
 </footer>
 </html>
