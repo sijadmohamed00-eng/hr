@@ -490,10 +490,7 @@ textarea.fi{resize:vertical;min-height:80px}
         <div class="gps-card" id="gpsCard">
           <div class="gdot checking" id="gdot"></div>
           <div><div class="gtxt" id="gtxt">جاري تحديد الموقع...</div><div class="gsub" id="gsub">يرجى السماح بالوصول للموقع</div></div>
-          <div style="display:flex;gap:6px;margin-right:auto;flex-shrink:0">
-            <button class="btn btn-sc btn-sm" onclick="checkGPS()" title="تحديث الموقع">🔄</button>
-            <button class="btn btn-sc btn-sm" id="autoCoBtn" onclick="toggleAutoCo()" title="تشغيل/إيقاف الانصراف التلقائي" style="font-size:10px">🚗 تلقائي</button>
-          </div>
+          <button class="btn btn-sc btn-sm" onclick="checkGPS()" style="margin-right:auto;flex-shrink:0">🔄</button>
         </div>
         <div class="status-disp">
           <div class="status-row">
@@ -1407,7 +1404,6 @@ textarea.fi{resize:vertical;min-height:80px}
 </div>
 
 <script>
-
 // ═══ DECODE HELPER (obfuscation layer) ═══
 function _d(s){return s.split(',').map(n=>String.fromCharCode(parseInt(n)^0x5A)).join('')}
 // ═══════════════════════════════════════════════════
@@ -2018,11 +2014,6 @@ function tryAutoLogin(){
 
 function logout(){
   CU=null; gpsOk=false; SA_MODE=false; CU_PERMS=null;
-  // أوقف مراقبة GPS
-  if(_gpsWatchId!==null&&navigator.geolocation){
-    navigator.geolocation.clearWatch(_gpsWatchId);
-    _gpsWatchId=null;
-  }
   autoTimers.forEach(t=>clearInterval(t)); autoTimers=[];
   DB.del('remembered');
   showScreen('loginScreen');
@@ -2054,78 +2045,7 @@ function startClock(){
 // ═══════════════════════════════════════════════════
 //  GPS
 // ═══════════════════════════════════════════════════
-let _gpsWatchId=null;
-let _autoCoEnabled=true; // الانصراف التلقائي مُفعَّل افتراضياً
-const AUTO_CO_DIST=750; // متر
-
-function startGPS(){
-  checkGPS();
-  startGPSWatch();
-}
-
-function startGPSWatch(){
-  if(_gpsWatchId!==null)return; // لا تبدأ مرتين
-  if(!navigator.geolocation)return;
-  _gpsWatchId=navigator.geolocation.watchPosition(pos=>{
-    uLat=pos.coords.latitude; uLng=pos.coords.longitude;
-    const wl=getWorkLoc();
-    const dist=calcDist(uLat,uLng,wl.lat,wl.lng);
-    // تحديث GPS UI
-    if(dist<=wl.rad){
-      gpsOk=true;
-      setGPSUI('ok',`✅ داخل نطاق العمل`,`المسافة: ${Math.round(dist)} م`);
-      if(document.getElementById('ciSub'))document.getElementById('ciSub').textContent='موقعك مؤكد';
-    }else{
-      gpsOk=false;
-      setGPSUI('fail',`📍 ${Math.round(dist)} م عن العمل`,`خارج نطاق تسجيل الحضور`);
-      if(document.getElementById('ciSub'))document.getElementById('ciSub').textContent='خارج نطاق العمل';
-    }
-    updAttBtns();
-    // ── الانصراف التلقائي عند المغادرة 750م ──
-    if(_autoCoEnabled && CU?.role==='emp' && dist>=AUTO_CO_DIST){
-      _tryAutoCheckout(dist);
-    }
-  },()=>{
-    gpsOk=false;
-    setGPSUI('fail','تعذّر تحديد الموقع','فعّل GPS');
-    updAttBtns();
-  },{enableHighAccuracy:true,timeout:15000,maximumAge=30000});
-}
-
-let _autoCoLock=false; // منع التكرار
-function _tryAutoCheckout(distMeters){
-  if(_autoCoLock)return;
-  const emp=getEmp(); if(!emp)return;
-  const att=DB.get('att')||[];
-  // هل هناك حضور مفتوح بدون انصراف؟
-  const allCI=att.filter(a=>a.eid===emp.id&&a.type==='ci').sort((a,b)=>new Date(b.ts)-new Date(a.ts));
-  const openCI=allCI.find(ci=>!att.find(co=>co.eid===emp.id&&co.type==='co'&&co.date===ci.date));
-  if(!openCI)return; // لا يوجد دوام مفتوح
-  // تأكد لم ينصرف خلال آخر 5 دقائق تفادياً للتكرار
-  const lastCO=att.filter(a=>a.eid===emp.id&&a.type==='co').sort((a,b)=>new Date(b.ts)-new Date(a.ts))[0];
-  if(lastCO&&(Date.now()-new Date(lastCO.ts).getTime())<300000)return;
-  _autoCoLock=true;
-  setTimeout(()=>_autoCoLock=false,60000); // unlock بعد دقيقة
-  // تسجيل الانصراف التلقائي
-  const now=new Date();
-  const mins=Math.round((now-new Date(openCI.ts))/60000);
-  const h=Math.floor(mins/60),m=mins%60;
-  const wl=getWorkLoc();
-  att.push({
-    id:genId(),eid:emp.id,ename:emp.name,
-    type:'co',date:openCI.date,time:fmtT(now),
-    ts:now.toISOString(),lat:uLat,lng:uLng,
-    dist:Math.round(distMeters),durMins:mins,
-    isAuto:true // علامة أنه تلقائي
-  });
-  DB.set('att',att);
-  addAdminLog('check_out',`انصراف تلقائي: ${emp.name} (${Math.round(distMeters)}م)`,{eid:emp.id,auto:true,dist:Math.round(distMeters)});
-  updTodayStatus(emp.id); renderEmpHist(emp.id); renderDayGrid(emp.id); updAttBtns(); refreshEmpUI(emp);
-  sendTg(`🚗 انصراف تلقائي\n👤 ${emp.name}\n🕐 ${fmtT(now)}\n📍 ${Math.round(distMeters)} م عن العمل\n⏱️ ${h}س ${m}د`);
-  playNotifSound('out');
-  showToast(`🚗 انصراف تلقائي — ابتعدت ${Math.round(distMeters)} م عن العمل`,'i');
-}
-
+function startGPS(){checkGPS()}
 function checkGPS(){
   setGPSUI('checking','جاري تحديد الموقع...','يرجى السماح بالوصول');
   if(!navigator.geolocation){setGPSUI('fail','GPS غير مدعوم','');return}
@@ -2329,26 +2249,13 @@ function doCO(){
   }
 }
 
-function toggleAutoCo(){
-  _autoCoEnabled=!_autoCoEnabled;
-  const btn=document.getElementById('autoCoBtn');
-  if(btn){
-    btn.textContent=_autoCoEnabled?'🚗 تلقائي':'🚗 موقوف';
-    btn.style.color=_autoCoEnabled?'var(--green)':'var(--red)';
-  }
-  showToast(_autoCoEnabled?'✅ الانصراف التلقائي مُفعَّل عند 750م':'⏸️ الانصراف التلقائي موقوف',_autoCoEnabled?'s':'i');
-}
-
 function renderEmpHist(eid){
   const c=document.getElementById('empHL'); if(!c)return;
   const att=(DB.get('att')||[]).filter(a=>a.eid===eid).sort((a,b)=>new Date(b.ts)-new Date(a.ts));
   c.innerHTML=att.length?att.map(a=>`
     <div class="hi">
-      <div class="hic ${a.type==='ci'?'in':'out'}">${a.type==='ci'?'✅':a.isAuto?'🚗':'🚪'}</div>
-      <div class="hinfo">
-        <div class="htype">${a.type==='ci'?'تسجيل حضور':a.isAuto?'انصراف تلقائي 🚗':'تسجيل انصراف'}${a.type==='co'&&a.durMins?` — ${Math.floor(a.durMins/60)}س ${a.durMins%60}د`:''}</div>
-        <div class="hdate">${fmtD(a.date)}${a.isAuto&&a.dist?` • ابتعاد ${a.dist}م`:''}</div>
-      </div>
+      <div class="hic ${a.type==='ci'?'in':'out'}">${a.type==='ci'?'✅':'🚪'}</div>
+      <div class="hinfo"><div class="htype">${a.type==='ci'?'تسجيل حضور':'تسجيل انصراف'}${a.type==='co'&&a.durMins?` — ${Math.floor(a.durMins/60)}س ${a.durMins%60}د`:''}</div><div class="hdate">${fmtD(a.date)}</div></div>
       <div class="htime">${a.time}</div>
     </div>`).join(''):`<div class="empty"><div class="ei">📭</div><p>لا توجد سجلات</p></div>`;
 }
@@ -3077,7 +2984,6 @@ function addBonD(){
   if(!emps[i].bon)emps[i].bon=[];
   emps[i].bon.push({type,amount,note:note||nm,date:todayStr()});
   DB.set('emps',emps);
-  addAdminLog('bonus_add',`إضافة حافز: ${emps[i].name} +${fmtN(amount)} د.ع`,{empId:DID,amount});
   document.getElementById('dbNote').value=''; document.getElementById('dbCustomAmt').value='';
   openDetail(DID); renderAdmin();
   sendTg(`🎁 حافز جديد\n👤 ${emps[i].name}\n💰 +${fmtN(amount)} د.ع\n📝 ${note||nm}`);
@@ -3114,7 +3020,6 @@ function rmDed(idx){
 function saveSal(){
   const v=parseInt(document.getElementById('eSalInp').value)||0; if(!v){showToast('راتب غير صحيح','e');return}
   const emps=DB.get('emps')||[], i=emps.findIndex(e=>e.id===DID); if(i===-1)return;
-  addAdminLog('salary_edit',`تعديل راتب: ${emps[i].name} → ${fmtN(v)} د.ع`,{empId:DID,newSal:v});
   emps[i].sal=v; DB.set('emps',emps); openDetail(DID); renderAdmin(); showToast('✅ تم تعديل الراتب','s');
 }
 
@@ -3147,10 +3052,7 @@ function saveNotes(){
 
 function deleteEmp(){
   if(!confirm('حذف هذا الموظف نهائياً؟'))return;
-  let emps=DB.get('emps')||[];
-  const emp=emps.find(e=>e.id===DID);
-  addAdminLog('emp_del',`حذف موظف: ${emp?.name||DID}`,{empId:DID});
-  emps=emps.filter(e=>e.id!==DID);
+  let emps=DB.get('emps')||[]; emps=emps.filter(e=>e.id!==DID);
   DB.set('emps',emps); closeModal('empDetailModal'); renderAdmin(); showToast('تم الحذف','i');
 }
 
@@ -3336,9 +3238,149 @@ document.addEventListener('DOMContentLoaded',()=>{
 window.addEventListener('DOMContentLoaded',()=>{
   setTimeout(tryAutoLogin,100);
 });
+</script>
 
+<!-- Sub-Admin Modal -->
 
+<div class="mov" id="subAdminModal">
+  <div class="modal" style="max-width:460px">
+    <div class="mh"><h3 id="subAdminModalTitle">➕ إضافة مدير فرعي</h3><button class="mx" onclick="closeModal('subAdminModal')">✕</button></div>
+    <div class="mb">
+      <input type="hidden" id="subAdminEditId">
+      <div class="fg"><label>الاسم الكامل *</label><input type="text" class="fi" id="saName" placeholder="مثال: أحمد علي"></div>
+      <div class="fg"><label>اسم المستخدم *</label><input type="text" class="fi" id="saUser" placeholder="مثال: ahmed_admin" style="direction:ltr;text-align:left" autocapitalize="none"></div>
+      <div class="fg"><label>كلمة المرور *</label><input type="text" class="fi" id="saPass" placeholder="••••••••" style="direction:ltr"></div>
+      <div class="fg"><label>الدور / اللقب</label>
+        <select class="fi" id="saRole">
+          <option value="manager">مدير فرعي</option>
+          <option value="assistant">مساعد مدير</option>
+          <option value="supervisor">مشرف</option>
+        </select>
+      </div>
+      <div style="background:var(--bg3);border:1px solid var(--br);border-radius:12px;padding:14px;margin-top:4px">
+        <div style="font-size:12px;font-weight:700;color:var(--purple);margin-bottom:12px">🔐 الصلاحيات</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px">
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:8px;border-radius:8px;background:var(--bg2);border:1px solid var(--br)">
+            <input type="checkbox" id="perm_view_overview" style="accent-color:var(--purple);width:15px;height:15px"> نظرة عامة
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:8px;border-radius:8px;background:var(--bg2);border:1px solid var(--br)">
+            <input type="checkbox" id="perm_view_emp" style="accent-color:var(--purple);width:15px;height:15px"> عرض الموظفين
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:8px;border-radius:8px;background:var(--bg2);border:1px solid var(--br)">
+            <input type="checkbox" id="perm_manage_emp" style="accent-color:var(--purple);width:15px;height:15px"> إدارة الموظفين
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:8px;border-radius:8px;background:var(--bg2);border:1px solid var(--br)">
+            <input type="checkbox" id="perm_att" style="accent-color:var(--purple);width:15px;height:15px"> سجل الحضور
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:8px;border-radius:8px;background:var(--bg2);border:1px solid var(--br)">
+            <input type="checkbox" id="perm_salary" style="accent-color:var(--purple);width:15px;height:15px"> الرواتب
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:8px;border-radius:8px;background:var(--bg2);border:1px solid var(--br)">
+            <input type="checkbox" id="perm_incentives" style="accent-color:var(--purple);width:15px;height:15px"> الحوافز
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:8px;border-radius:8px;background:var(--bg2);border:1px solid var(--br)">
+            <input type="checkbox" id="perm_deductions" style="accent-color:var(--purple);width:15px;height:15px"> الخصومات
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:8px;border-radius:8px;background:var(--bg2);border:1px solid var(--br)">
+            <input type="checkbox" id="perm_shifts" style="accent-color:var(--purple);width:15px;height:15px"> الشفتات
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:8px;border-radius:8px;background:var(--bg2);border:1px solid var(--br)">
+            <input type="checkbox" id="perm_reports" style="accent-color:var(--purple);width:15px;height:15px"> التقارير
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:8px;border-radius:8px;background:var(--bg2);border:1px solid var(--br)">
+            <input type="checkbox" id="perm_leave" style="accent-color:var(--purple);width:15px;height:15px"> طلبات الإجازة
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:8px;border-radius:8px;background:var(--bg2);border:1px solid var(--br)">
+            <input type="checkbox" id="perm_messages" style="accent-color:var(--purple);width:15px;height:15px"> الرسائل
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:8px;border-radius:8px;background:var(--bg2);border:1px solid var(--br)">
+            <input type="checkbox" id="perm_sales" style="accent-color:var(--purple);width:15px;height:15px"> إحصائيات المبيعات
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:8px;border-radius:8px;background:var(--bg2);border:1px solid var(--br)">
+            <input type="checkbox" id="perm_logs" style="accent-color:var(--purple);width:15px;height:15px"> سجل العمليات
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:8px;border-radius:8px;background:var(--bg2);border:1px solid var(--br)">
+            <input type="checkbox" id="perm_settings" style="accent-color:var(--purple);width:15px;height:15px"> الإعدادات
+          </label>
+        </div>
+        <div class="flex g8 mt12">
+          <button class="btn btn-sc btn-sm" onclick="selectAllPerms(true)">✅ تحديد الكل</button>
+          <button class="btn btn-sc btn-sm" onclick="selectAllPerms(false)">❌ إلغاء الكل</button>
+        </div>
+      </div>
+    </div>
+    <div class="mf">
+      <button class="btn btn-sc" onclick="closeModal('subAdminModal')">إلغاء</button>
+      <button class="btn btn-pr" onclick="saveSubAdmin()">💾 حفظ</button>
+    </div>
+  </div>
+</div>
 
+<!-- Edit Sale Modal -->
+
+<div class="mov" id="editSaleModal">
+  <div class="modal" style="max-width:420px">
+    <div class="mh"><h3>✏️ تعديل الطلب</h3><button class="mx" onclick="closeModal('editSaleModal')">✕</button></div>
+    <div class="mb">
+      <input type="hidden" id="editSaleId">
+      <div class="fg"><label>نوع الطلب / المنصة</label>
+        <select class="fi" id="editSalePlatform">
+          <option value="سفري">🚗 سفري</option>
+          <option value="دلفري">🛵 دلفري</option>
+          <option value="واتساب">📱 واتساب</option>
+          <option value="انستقرام">📸 انستقرام</option>
+          <option value="فيسبوك">👍 فيسبوك</option>
+          <option value="حضوري">🏪 حضوري</option>
+          <option value="أخرى">📝 أخرى</option>
+        </select>
+      </div>
+      <div class="fg"><label>هل العميل مشترك؟</label>
+        <select class="fi" id="editSaleSubscribed" onchange="document.getElementById('editSaleAmountWrap').style.display=this.value==='yes'?'block':'none'">
+          <option value="no">❌ غير مشترك</option>
+          <option value="yes">✅ مشترك</option>
+        </select>
+      </div>
+      <div class="fg" id="editSaleAmountWrap" style="display:none"><label>المبلغ</label><input type="number" class="fi" id="editSaleAmount" placeholder="0"></div>
+      <div class="fg"><label>ملاحظة</label><input type="text" class="fi" id="editSaleNote" placeholder="اختياري"></div>
+    </div>
+    <div class="mf"><button class="btn btn-sc" onclick="closeModal('editSaleModal')">إلغاء</button><button class="btn btn-pr" onclick="saveEditSale()">💾 حفظ</button></div>
+  </div>
+</div>
+
+<!-- Add Sale Modal -->
+
+<div class="mov" id="addSaleModal">
+  <div class="modal" style="max-width:420px">
+    <div class="mh"><h3>📦 إضافة طلب/مبيعة</h3><button class="mx" onclick="closeModal('addSaleModal')">✕</button></div>
+    <div class="mb">
+      <div class="fg"><label>الموظف</label><select class="fi" id="saleEmpSel"></select></div>
+      <div class="fg"><label>نوع الطلب / المنصة</label>
+        <select class="fi" id="salePlatform">
+          <option value="سفري">🚗 سفري</option>
+          <option value="دلفري">🛵 دلفري</option>
+          <option value="واتساب">📱 واتساب</option>
+          <option value="انستقرام">📸 انستقرام</option>
+          <option value="فيسبوك">👍 فيسبوك</option>
+          <option value="حضوري">🏪 حضوري</option>
+          <option value="أخرى">📝 أخرى</option>
+        </select>
+      </div>
+      <div class="fg"><label>هل العميل مشترك؟</label>
+        <select class="fi" id="saleSubscribed" onchange="document.getElementById('saleAmountWrap').style.display=this.value==='yes'?'block':'none'">
+          <option value="no">❌ غير مشترك</option>
+          <option value="yes">✅ مشترك</option>
+        </select>
+      </div>
+      <div class="fg" id="saleAmountWrap" style="display:none"><label>المبلغ المأخوذ بهذه المنصة</label><input type="number" class="fi" id="saleAmount" placeholder="0"></div>
+      <div class="fg"><label>ملاحظة</label><input type="text" class="fi" id="saleNote" placeholder="اختياري"></div>
+    </div>
+    <div class="mf"><button class="btn btn-sc" onclick="closeModal('addSaleModal')">إلغاء</button><button class="btn btn-pr" onclick="addSaleRecord()">✅ حفظ</button></div>
+  </div>
+</div>
+
+<!-- Employee Leave Request notification badge CSS inline handled via JS -->
+
+<script>
 // ══════════════════════════════════════════════════════
 //  NEW FEATURES v3 — الميزات الجديدة
 // ══════════════════════════════════════════════════════
@@ -4163,7 +4205,33 @@ function doAutoCloudBackup(){
     .catch(e=>console.error('Backup err:',e));
 }
 
-// startTimers is defined in main block
+// Override startTimers to add new checks
+const _origStartTimers=typeof startTimers==='function'?startTimers:null;
+function startTimers(){
+  startClock();
+  let last4am='', last3am='';
+  const t=setInterval(()=>{
+    if(CU?.role!=='admin'&&CU?.role!=='emp')return;
+    const now=new Date(), today=todayStr();
+    const h=now.getHours(), mn=now.getMinutes();
+    if(CU?.role==='admin'){
+      if(h===4&&mn===0&&last4am!==today){
+        last4am=today;
+        const text=buildReportText('auto');
+        sendTg(text);saveReportToArchive(text,'auto');
+        checkWeeklyReport();
+        doAutoCloudBackup();
+        showToast('📊 تقرير 4 صباحاً + نسخ احتياطي ☁️','s');
+      }
+      if(h===3&&mn===0&&last3am!==today){last3am=today;open3amPromptAuto();}
+      checkPeriodReset();
+    }
+    if(CU?.role==='emp')checkSmartAlerts();
+  },30000);
+  autoTimers.push(t);
+  requestBrowserNotif();
+  setTimeout(_startChatListener,1500);
+}
 
 // renderAdmin patching removed - new renders integrated directly
 
@@ -4193,10 +4261,34 @@ function renderAdminAtt(){
   }).join(''):`<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--t3)">لا توجد سجلات</td></tr>`;
 }
 
-// logging integrated directly in saveSal, addBonD, addDedD, deleteEmp above
+// Override loadEmpScreen to also render new emp sections
+// loadEmpScreen override integrated below
 
+// Patch saveSal/saveShift/addBonD/addDedD to log admin actions
+const _origSaveSal=saveSal;
+function saveSal(){
+  const v=parseInt(document.getElementById('eSalInp').value)||0;
+  const emps=DB.get('emps')||[];const emp=emps.find(e=>e.id===DID);
+  addAdminLog('salary_edit',`تعديل راتب: ${emp?.name||DID} → ${fmtN(v)} د.ع`,{empId:DID,newSal:v});
+  _origSaveSal();
+}
+const _origAddBonD=addBonD;
+function addBonD(){
+  const emps=DB.get('emps')||[];const emp=emps.find(e=>e.id===DID);
+  addAdminLog('bonus_add',`إضافة حافز: ${emp?.name||DID}`,{empId:DID});
+  _origAddBonD();
+}
+const _origAddDedD_DISABLED=null; // تم إلغاء الـ patch لتفادي الحلقة اللانهائية
+// addDedD يُسجّل في اللوج مباشرة داخل الدالة الأصلية أدناه
+const _origDeleteEmp=deleteEmp;
+function deleteEmp(){
+  const emps=DB.get('emps')||[];const emp=emps.find(e=>e.id===DID);
+  addAdminLog('emp_del',`حذف موظف: ${emp?.name||DID}`,{empId:DID});
+  _origDeleteEmp();
+}
+</script>
 
-
+<script>
 // ══════════════════════════════════════════════════════
 //  SUB-ADMIN SYSTEM — نظام المديرين الفرعيين
 // ══════════════════════════════════════════════════════
@@ -4630,148 +4722,7 @@ self.addEventListener('fetch',e=>{
     console.log('PWA ready');
   });
 }
-
 </script>
-
-<!-- Sub-Admin Modal -->
-
-<div class="mov" id="subAdminModal">
-  <div class="modal" style="max-width:460px">
-    <div class="mh"><h3 id="subAdminModalTitle">➕ إضافة مدير فرعي</h3><button class="mx" onclick="closeModal('subAdminModal')">✕</button></div>
-    <div class="mb">
-      <input type="hidden" id="subAdminEditId">
-      <div class="fg"><label>الاسم الكامل *</label><input type="text" class="fi" id="saName" placeholder="مثال: أحمد علي"></div>
-      <div class="fg"><label>اسم المستخدم *</label><input type="text" class="fi" id="saUser" placeholder="مثال: ahmed_admin" style="direction:ltr;text-align:left" autocapitalize="none"></div>
-      <div class="fg"><label>كلمة المرور *</label><input type="text" class="fi" id="saPass" placeholder="••••••••" style="direction:ltr"></div>
-      <div class="fg"><label>الدور / اللقب</label>
-        <select class="fi" id="saRole">
-          <option value="manager">مدير فرعي</option>
-          <option value="assistant">مساعد مدير</option>
-          <option value="supervisor">مشرف</option>
-        </select>
-      </div>
-      <div style="background:var(--bg3);border:1px solid var(--br);border-radius:12px;padding:14px;margin-top:4px">
-        <div style="font-size:12px;font-weight:700;color:var(--purple);margin-bottom:12px">🔐 الصلاحيات</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px">
-          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:8px;border-radius:8px;background:var(--bg2);border:1px solid var(--br)">
-            <input type="checkbox" id="perm_view_overview" style="accent-color:var(--purple);width:15px;height:15px"> نظرة عامة
-          </label>
-          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:8px;border-radius:8px;background:var(--bg2);border:1px solid var(--br)">
-            <input type="checkbox" id="perm_view_emp" style="accent-color:var(--purple);width:15px;height:15px"> عرض الموظفين
-          </label>
-          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:8px;border-radius:8px;background:var(--bg2);border:1px solid var(--br)">
-            <input type="checkbox" id="perm_manage_emp" style="accent-color:var(--purple);width:15px;height:15px"> إدارة الموظفين
-          </label>
-          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:8px;border-radius:8px;background:var(--bg2);border:1px solid var(--br)">
-            <input type="checkbox" id="perm_att" style="accent-color:var(--purple);width:15px;height:15px"> سجل الحضور
-          </label>
-          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:8px;border-radius:8px;background:var(--bg2);border:1px solid var(--br)">
-            <input type="checkbox" id="perm_salary" style="accent-color:var(--purple);width:15px;height:15px"> الرواتب
-          </label>
-          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:8px;border-radius:8px;background:var(--bg2);border:1px solid var(--br)">
-            <input type="checkbox" id="perm_incentives" style="accent-color:var(--purple);width:15px;height:15px"> الحوافز
-          </label>
-          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:8px;border-radius:8px;background:var(--bg2);border:1px solid var(--br)">
-            <input type="checkbox" id="perm_deductions" style="accent-color:var(--purple);width:15px;height:15px"> الخصومات
-          </label>
-          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:8px;border-radius:8px;background:var(--bg2);border:1px solid var(--br)">
-            <input type="checkbox" id="perm_shifts" style="accent-color:var(--purple);width:15px;height:15px"> الشفتات
-          </label>
-          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:8px;border-radius:8px;background:var(--bg2);border:1px solid var(--br)">
-            <input type="checkbox" id="perm_reports" style="accent-color:var(--purple);width:15px;height:15px"> التقارير
-          </label>
-          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:8px;border-radius:8px;background:var(--bg2);border:1px solid var(--br)">
-            <input type="checkbox" id="perm_leave" style="accent-color:var(--purple);width:15px;height:15px"> طلبات الإجازة
-          </label>
-          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:8px;border-radius:8px;background:var(--bg2);border:1px solid var(--br)">
-            <input type="checkbox" id="perm_messages" style="accent-color:var(--purple);width:15px;height:15px"> الرسائل
-          </label>
-          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:8px;border-radius:8px;background:var(--bg2);border:1px solid var(--br)">
-            <input type="checkbox" id="perm_sales" style="accent-color:var(--purple);width:15px;height:15px"> إحصائيات المبيعات
-          </label>
-          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:8px;border-radius:8px;background:var(--bg2);border:1px solid var(--br)">
-            <input type="checkbox" id="perm_logs" style="accent-color:var(--purple);width:15px;height:15px"> سجل العمليات
-          </label>
-          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:8px;border-radius:8px;background:var(--bg2);border:1px solid var(--br)">
-            <input type="checkbox" id="perm_settings" style="accent-color:var(--purple);width:15px;height:15px"> الإعدادات
-          </label>
-        </div>
-        <div class="flex g8 mt12">
-          <button class="btn btn-sc btn-sm" onclick="selectAllPerms(true)">✅ تحديد الكل</button>
-          <button class="btn btn-sc btn-sm" onclick="selectAllPerms(false)">❌ إلغاء الكل</button>
-        </div>
-      </div>
-    </div>
-    <div class="mf">
-      <button class="btn btn-sc" onclick="closeModal('subAdminModal')">إلغاء</button>
-      <button class="btn btn-pr" onclick="saveSubAdmin()">💾 حفظ</button>
-    </div>
-  </div>
-</div>
-
-<!-- Edit Sale Modal -->
-
-<div class="mov" id="editSaleModal">
-  <div class="modal" style="max-width:420px">
-    <div class="mh"><h3>✏️ تعديل الطلب</h3><button class="mx" onclick="closeModal('editSaleModal')">✕</button></div>
-    <div class="mb">
-      <input type="hidden" id="editSaleId">
-      <div class="fg"><label>نوع الطلب / المنصة</label>
-        <select class="fi" id="editSalePlatform">
-          <option value="سفري">🚗 سفري</option>
-          <option value="دلفري">🛵 دلفري</option>
-          <option value="واتساب">📱 واتساب</option>
-          <option value="انستقرام">📸 انستقرام</option>
-          <option value="فيسبوك">👍 فيسبوك</option>
-          <option value="حضوري">🏪 حضوري</option>
-          <option value="أخرى">📝 أخرى</option>
-        </select>
-      </div>
-      <div class="fg"><label>هل العميل مشترك؟</label>
-        <select class="fi" id="editSaleSubscribed" onchange="document.getElementById('editSaleAmountWrap').style.display=this.value==='yes'?'block':'none'">
-          <option value="no">❌ غير مشترك</option>
-          <option value="yes">✅ مشترك</option>
-        </select>
-      </div>
-      <div class="fg" id="editSaleAmountWrap" style="display:none"><label>المبلغ</label><input type="number" class="fi" id="editSaleAmount" placeholder="0"></div>
-      <div class="fg"><label>ملاحظة</label><input type="text" class="fi" id="editSaleNote" placeholder="اختياري"></div>
-    </div>
-    <div class="mf"><button class="btn btn-sc" onclick="closeModal('editSaleModal')">إلغاء</button><button class="btn btn-pr" onclick="saveEditSale()">💾 حفظ</button></div>
-  </div>
-</div>
-
-<!-- Add Sale Modal -->
-
-<div class="mov" id="addSaleModal">
-  <div class="modal" style="max-width:420px">
-    <div class="mh"><h3>📦 إضافة طلب/مبيعة</h3><button class="mx" onclick="closeModal('addSaleModal')">✕</button></div>
-    <div class="mb">
-      <div class="fg"><label>الموظف</label><select class="fi" id="saleEmpSel"></select></div>
-      <div class="fg"><label>نوع الطلب / المنصة</label>
-        <select class="fi" id="salePlatform">
-          <option value="سفري">🚗 سفري</option>
-          <option value="دلفري">🛵 دلفري</option>
-          <option value="واتساب">📱 واتساب</option>
-          <option value="انستقرام">📸 انستقرام</option>
-          <option value="فيسبوك">👍 فيسبوك</option>
-          <option value="حضوري">🏪 حضوري</option>
-          <option value="أخرى">📝 أخرى</option>
-        </select>
-      </div>
-      <div class="fg"><label>هل العميل مشترك؟</label>
-        <select class="fi" id="saleSubscribed" onchange="document.getElementById('saleAmountWrap').style.display=this.value==='yes'?'block':'none'">
-          <option value="no">❌ غير مشترك</option>
-          <option value="yes">✅ مشترك</option>
-        </select>
-      </div>
-      <div class="fg" id="saleAmountWrap" style="display:none"><label>المبلغ المأخوذ بهذه المنصة</label><input type="number" class="fi" id="saleAmount" placeholder="0"></div>
-      <div class="fg"><label>ملاحظة</label><input type="text" class="fi" id="saleNote" placeholder="اختياري"></div>
-    </div>
-    <div class="mf"><button class="btn btn-sc" onclick="closeModal('addSaleModal')">إلغاء</button><button class="btn btn-pr" onclick="addSaleRecord()">✅ حفظ</button></div>
-  </div>
-</div>
-
-<!-- Employee Leave Request notification badge CSS inline handled via JS -->
 
 </body>
 <footer style="
