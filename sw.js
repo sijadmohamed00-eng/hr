@@ -1,7 +1,11 @@
 const CACHE_NAME = "cinderella-v1";
 const urlsToCache = [
   "/",
-  "/index.html"
+  "/index.html",
+  "/manifest.json",
+  "/icon-192.png",
+  "/icon-512.png",
+  "/sw.js"
 ];
 
 self.addEventListener("install", event => {
@@ -10,6 +14,7 @@ self.addEventListener("install", event => {
       return cache.addAll(urlsToCache);
     })
   );
+  self.skipWaiting();
 });
 
 self.addEventListener("fetch", event => {
