@@ -1,19 +1,20 @@
 {
-  "name": "سندريلا",
+  "name": "سندريلا — الكول سنتر",
   "short_name": "سندريلا",
-  "start_url": "/",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#0a0c14",
   "theme_color": "#0a0c14",
-  "description": "نظام إدارة الكول سنتر - مطاعم سندريلا",
+  "lang": "ar",
+  "dir": "rtl",
   "icons": [
     {
-      "src": "icon-192.png",
+      "src": "icon.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "icon-512.png",
+      "src": "icon.png",
       "sizes": "512x512",
       "type": "image/png"
     }
