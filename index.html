@@ -823,7 +823,6 @@ textarea.fi{resize:vertical;min-height:80px}
       </div>
     </div>
 
-```
 <!-- EMPLOYEES -->
 <div class="tab" id="at-emp">
   <div class="ph fb">
@@ -909,6 +908,7 @@ textarea.fi{resize:vertical;min-height:80px}
         <div class="iqc" onclick="qInc('sales100')"><div class="iq">100</div><div class="il">قطعة جبن/مقبلات</div><div class="ia">+ 5,000 د.ع</div></div>
         <div class="iqc" onclick="qInc('sales200')"><div class="iq">200</div><div class="il">قطعة جبن/مقبلات</div><div class="ia">+ 10,000 د.ع</div></div>
         <div class="iqc" onclick="qInc('shift')"><div class="iq">⏰</div><div class="il">دوام كامل</div><div class="ia">+ 10,000 د.ع</div></div>
+        <div class="iqc" onclick="openShiftCustomBon()"><div class="iq">🎯</div><div class="il">حافز شفتات مخصص</div><div class="ia">مبلغ حر بالشفت</div></div>
         <div class="iqc" onclick="openModal('cbModal')"><div class="iq">✏️</div><div class="il">حافز مخصص</div><div class="ia">مبلغ حر</div></div>
       </div>
       <div class="divider"></div>
@@ -920,15 +920,16 @@ textarea.fi{resize:vertical;min-height:80px}
 
 <!-- SHIFTS -->
 <div class="tab" id="at-sh">
-  <div class="ph"><h2>🕐 الشفتات</h2></div>
-  <div class="shgrid mb16">
-    <div class="shcard"><div class="shn">شفت 1</div><div class="shh">⏰ 2:00ظ — 2:00ل</div><div class="shs">12 ساعة • كامل +10,000</div></div>
-    <div class="shcard"><div class="shn">شفت 2</div><div class="shh">⏰ 3:30ع — 3:30ف</div><div class="shs">12 ساعة • كامل +10,000</div></div>
-    <div class="shcard"><div class="shn">نصف شفت 3</div><div class="shh">⏰ 6:00م — 2:00ل</div><div class="shs">8 ساعات • نصفي</div></div>
-    <div class="shcard"><div class="shn">نصف شفت 4</div><div class="shh">⏰ 7:00م — 3:00ف</div><div class="shs">8 ساعات • نصفي</div></div>
-    <div class="shcard"><div class="shn">نصف شفت 5</div><div class="shh">⏰ 7:30م — 3:30ف</div><div class="shs">8 ساعات • نصفي</div></div>
-    <div class="shcard"><div class="shn">شفت 6</div><div class="shh">⏰ 6:00م — 3:30ف</div><div class="shs">9.5 ساعة • كامل +10,000</div></div>
-    <div class="shcard" style="border-color:rgba(0,229,255,.2)"><div class="shn" style="color:var(--cyan)">وقت مخصص</div><div class="shh">⏰ يحدده الموظف</div><div class="shs">يُحسب بالساعات • موافقة المدير</div></div>
+  <div class="ph fb"><h2>🕐 الشفتات</h2><button class="btn btn-pr btn-sm" onclick="openAddShiftModal()">➕ إضافة شفت جديد</button></div>
+  <div class="shgrid mb16" id="shiftCardsGrid">
+    <div class="shcard"><div class="shn">6 م — 2 ص</div><div class="shh">12 ساعة</div><div class="shs">كامل • +10,000</div></div>
+    <div class="shcard"><div class="shn">3:30 م — 3:30 ص</div><div class="shh">12 ساعة</div><div class="shs">كامل • +10,000</div></div>
+    <div class="shcard"><div class="shn">6 م — 2 ص (8س)</div><div class="shh">8 ساعات</div><div class="shs">نصفي</div></div>
+    <div class="shcard"><div class="shn">7 م — 3 ص</div><div class="shh">8 ساعات</div><div class="shs">نصفي</div></div>
+    <div class="shcard"><div class="shn">7:30 م — 3:30 ص</div><div class="shh">8 ساعات</div><div class="shs">نصفي</div></div>
+    <div class="shcard"><div class="shn">6 م — 3:30 ص</div><div class="shh">9.5 ساعة</div><div class="shs">كامل • +10,000</div></div>
+    <div class="shcard" style="border-color:rgba(0,230,118,.3)"><div class="shn" style="color:var(--green)">6 م — 4 ص</div><div class="shh">10 ساعات</div><div class="shs">يومي • +4,250/يوم</div></div>
+    <div class="shcard" style="border-color:rgba(0,229,255,.2)"><div class="shn" style="color:var(--cyan)">وقت مخصص</div><div class="shh">يحدده المدير</div><div class="shs">موافقة المدير</div></div>
   </div>
   <!-- جدول الأسبوع القادم -->
   <div class="card mb12" style="border-color:rgba(0,229,255,.2);background:rgba(0,229,255,.03)">
@@ -1268,7 +1269,6 @@ textarea.fi{resize:vertical;min-height:80px}
     </div></div>
   </div>
 </div>
-```
 
   </div>
     <div class="mobile-nav" id="adminMobileNav">
@@ -1300,6 +1300,7 @@ textarea.fi{resize:vertical;min-height:80px}
 <!-- ═══ MODALS ═══ -->
 
 <!-- Manual Multi-Day Attendance Modal -->
+
 <div class="mov" id="manAttMultiModal">
   <div class="modal" style="max-width:440px">
     <div class="mh"><h3>📅 تسجيل أيام حضور متعددة</h3><button class="mx" onclick="closeModal('manAttMultiModal')">✕</button></div>
@@ -1334,13 +1335,14 @@ textarea.fi{resize:vertical;min-height:80px}
       <div class="fg"><label>كلمة المرور * (7 أرقام موصى بها)</label><input type="text" class="fi" id="nePass" style="direction:ltr"></div>
       <div class="fg"><label>الشفت *</label>
         <select class="fi" id="neShift" onchange="handleShiftChange('ne')">
-          <option value="14:00-02:00">شفت 1 — 2:00ظ إلى 2:00ل (12 ساعة)</option>
-          <option value="15:30-03:30">شفت 2 — 3:30ع إلى 3:30ف (12 ساعة)</option>
-          <option value="18:00-02:00">نصف شفت 3 — 6:00م إلى 2:00ل (8 ساعات)</option>
-          <option value="19:00-03:00">نصف شفت 4 — 7:00م إلى 3:00ف (8 ساعات)</option>
-          <option value="19:30-03:30">نصف شفت 5 — 7:30م إلى 3:30ف (8 ساعات)</option>
-          <option value="18:00-03:30">شفت 6 — 6:00م إلى 3:30ف (9.5 ساعة)</option>
-          <option value="custom">وقت مخصص (بموافقة المدير)</option>
+          <option value="14:00-02:00">6 م — 2 ص (12س) • كامل</option>
+          <option value="15:30-03:30">3:30 م — 3:30 ص (12س) • كامل</option>
+          <option value="18:00-02:00">6 م — 2 ص (8س) • نصفي</option>
+          <option value="19:00-03:00">7 م — 3 ص (8س) • نصفي</option>
+          <option value="19:30-03:30">7:30 م — 3:30 ص (8س) • نصفي</option>
+          <option value="18:00-03:30">6 م — 3:30 ص (9.5س) • كامل</option>
+          <option value="18:00-04:00">6 م — 4 ص (10س) • يومي +4,250</option>
+          <option value="custom">وقت مخصص</option>
         </select>
       </div>
       <div id="neCustomWrap" style="display:none">
@@ -1376,13 +1378,14 @@ textarea.fi{resize:vertical;min-height:80px}
         <div class="fg"><label>تعديل الشفت</label>
           <div class="flex g8">
             <select class="fi" id="eShiftInp" onchange="handleShiftChange('e')">
-              <option value="14:00-02:00">شفت 1 — 2:00ظ إلى 2:00ل</option>
-              <option value="15:30-03:30">شفت 2 — 3:30ع إلى 3:30ف</option>
-              <option value="18:00-02:00">نصف شفت 3 — 6:00م إلى 2:00ل</option>
-              <option value="19:00-03:00">نصف شفت 4 — 7:00م إلى 3:00ف</option>
-              <option value="19:30-03:30">نصف شفت 5 — 7:30م إلى 3:30ف</option>
-              <option value="18:00-03:30">شفت 6 — 6:00م إلى 3:30ف</option>
-              <option value="custom">وقت مخصص</option>
+          <option value="14:00-02:00">6 م — 2 ص (12س) • كامل</option>
+          <option value="15:30-03:30">3:30 م — 3:30 ص (12س) • كامل</option>
+          <option value="18:00-02:00">6 م — 2 ص (8س) • نصفي</option>
+          <option value="19:00-03:00">7 م — 3 ص (8س) • نصفي</option>
+          <option value="19:30-03:30">7:30 م — 3:30 ص (8س) • نصفي</option>
+          <option value="18:00-03:30">6 م — 3:30 ص (9.5س) • كامل</option>
+          <option value="18:00-04:00">6 م — 4 ص (10س) • يومي +4,250</option>
+          <option value="custom">وقت مخصص</option>
             </select>
             <button class="btn btn-wa" onclick="saveShift()">حفظ</button>
           </div>
@@ -1421,11 +1424,12 @@ textarea.fi{resize:vertical;min-height:80px}
         <div style="background:rgba(0,230,118,.04);border:1px solid rgba(0,230,118,.15);border-radius:12px;padding:14px;margin-bottom:12px">
           <div style="font-size:13px;font-weight:700;margin-bottom:10px;color:var(--green)">➕ إضافة حافز</div>
           <div class="fg"><label>نوع الحافز</label>
-            <select class="fi" id="dbType" onchange="document.getElementById('dbCustomWrap').style.display=this.value==='custom'?'block':'none'">
-              <option value="sales100">100 قطعة (+5,000)</option>
-              <option value="sales200">200 قطعة (+10,000)</option>
+            <select class="fi" id="dbType" onchange="document.getElementById('dbCustomWrap').style.display=this.value==='custom'||this.value==='shiftcustom'?'block':'none'">
+              <option value="sales100">100 قطعة جبن (+5,000)</option>
+              <option value="sales200">200 قطعة جبن (+10,000)</option>
               <option value="shift">دوام كامل (+10,000)</option>
-              <option value="custom">مخصص</option>
+              <option value="shiftcustom">حافز شفتات مخصص</option>
+              <option value="custom">حافز مخصص حر</option>
             </select>
           </div>
           <div class="fg" id="dbCustomWrap" style="display:none"><label>المبلغ</label><input type="number" class="fi" id="dbCustomAmt"></div>
@@ -1476,12 +1480,13 @@ textarea.fi{resize:vertical;min-height:80px}
       <div class="fg"><label>الموظف</label><input type="text" class="fi" id="qsName" readonly></div>
       <div class="fg"><label>الشفت الجديد</label>
         <select class="fi" id="qsShift" onchange="handleShiftChange('qs')">
-          <option value="14:00-02:00">شفت 1 — 2:00ظ إلى 2:00ل</option>
-          <option value="15:30-03:30">شفت 2 — 3:30ع إلى 3:30ف</option>
-          <option value="18:00-02:00">نصف شفت 3 — 6:00م إلى 2:00ل</option>
-          <option value="19:00-03:00">نصف شفت 4 — 7:00م إلى 3:00ف</option>
-          <option value="19:30-03:30">نصف شفت 5 — 7:30م إلى 3:30ف</option>
-          <option value="18:00-03:30">شفت 6 — 6:00م إلى 3:30ف</option>
+          <option value="14:00-02:00">6 م — 2 ص (12س) • كامل</option>
+          <option value="15:30-03:30">3:30 م — 3:30 ص (12س) • كامل</option>
+          <option value="18:00-02:00">6 م — 2 ص (8س) • نصفي</option>
+          <option value="19:00-03:00">7 م — 3 ص (8س) • نصفي</option>
+          <option value="19:30-03:30">7:30 م — 3:30 ص (8س) • نصفي</option>
+          <option value="18:00-03:30">6 م — 3:30 ص (9.5س) • كامل</option>
+          <option value="18:00-04:00">6 م — 4 ص (10س) • يومي +4,250</option>
           <option value="custom">وقت مخصص</option>
         </select>
       </div>
@@ -1563,15 +1568,17 @@ const TG_TOKEN=_d('98,111,107,104,111,99,107,104,106,106,96,27,27,31,2,17,27,49,
 const TG_CHAT_DEFAULT='817533960';
 const SHIFT_BON=10000, INC100=5000, INC200=10000, FREE_LEAVES_PER_HALF=2;
 
-const SHIFTS={
+const SHIFTS_DEFAULT={
   '14:00-02:00':{name:'شفت 1',s:'14:00',e:'02:00',h:12,full:true,display:'2:00ظ ← 2:00ل'},
   '15:30-03:30':{name:'شفت 2',s:'15:30',e:'03:30',h:12,full:true,display:'3:30ع ← 3:30ف'},
   '18:00-02:00':{name:'نصف شفت 3',s:'18:00',e:'02:00',h:8,full:false,display:'6:00م ← 2:00ل'},
   '19:00-03:00':{name:'نصف شفت 4',s:'19:00',e:'03:00',h:8,full:false,display:'7:00م ← 3:00ف'},
   '19:30-03:30':{name:'نصف شفت 5',s:'19:30',e:'03:30',h:8,full:false,display:'7:30م ← 3:30ف'},
   '18:00-03:30':{name:'شفت 6',s:'18:00',e:'03:30',h:9.5,full:true,display:'6:00م ← 3:30ف'},
+  '18:00-04:00':{name:'شفت 7',s:'18:00',e:'04:00',h:10,full:false,bonusType:'daily',dailyBonus:4250,display:'6:00م ← 4:00ف'},
   'custom':{name:'وقت مخصص',full:false,display:'مخصص'}
 };
+let SHIFTS=Object.assign({},SHIFTS_DEFAULT);
 
 let fbDB=null,fbSyncEnabled=false;
 const DB={
@@ -1780,10 +1787,7 @@ function calcDist(la1,lo1,la2,lo2){
   const a=Math.sin(dL/2)**2+Math.cos(la1*Math.PI/180)*Math.cos(la2*Math.PI/180)*Math.sin(dO/2)**2;
   return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
 }
-function shiftLabel(emp){
-  if(emp.sh==='custom'&&emp.customFrom&&emp.customTo)return`مخصص ${emp.customFrom}—${emp.customTo}`;
-  return(SHIFTS[emp.sh]||{name:emp.sh}).name;
-}
+// shiftLabel overridden below
 
 
 
@@ -1944,6 +1948,7 @@ function getPeriod(){
 // lvH1/lvH2 أصبحت lvM للشهر
 
 function calcSalary(emp,customPer){
+  _reloadShifts();
   const per=customPer||getPeriod();
   const dailyRate=Math.round(emp.sal/30);
   const att=DB.get('att')||[];
@@ -1954,24 +1959,30 @@ function calcSalary(emp,customPer){
   const presentSet=new Set(att.filter(a=>a.eid===emp.id&&a.type==='ci'&&a.date>=ps&&a.date<=pe).map(a=>a.date));
   const daysPresent=presentSet.size;
   // أيام الإجازات المسجلة من قبل المدير في هذه الفترة
-  const leaveSet=new Set(leaveDays.filter(l=>l.eid===emp.id&&l.date>=ps&&l.date<=pe).map(l=>l.date));
-  const leavesUsed=leaveSet.size+(emp['lvM']||0); // إجازات مدير + إجازات طلب موظف
+  // كل إجازة مدفوعة = يوم واحد فقط (لا تُحتسب مرتين)
+  const leaveSet=new Set(leaveDays.filter(l=>l.eid===emp.id&&l.date>=ps&&l.date<=pe&&!presentSet.has(l.date)).map(l=>l.date));
+  const lvMcount=emp['lvM']||0;
+  const leavesUsed=leaveSet.size+lvMcount;
   const FREE_LEAVES_MONTHLY=4;
-  // كل الإجازات مدفوعة ضمن الرصيد (4 شهرياً)
+  // الإجازات المدفوعة ضمن الرصيد
   const paidLeaves=Math.min(leavesUsed,FREE_LEAVES_MONTHLY);
   const deductLeaves=Math.max(0,leavesUsed-FREE_LEAVES_MONTHLY);
-  // الأيام المدفوعة = حضور + إجازات مدفوعة (لا يوجد غياب)
+  // الأيام المدفوعة = حضور + إجازات مدفوعة
   const paidDays=daysPresent+paidLeaves;
-  // الخصم فقط على الإجازات التي تجاوزت الرصيد
-  const deductDays=deductLeaves;
-  const earnedSalary=paidDays*dailyRate - deductLeaves*dailyRate;
-  const shiftBonTotal=(emp.bon||[]).filter(b=>b.type==='shift'&&b.date>=ps&&b.date<=pe).reduce((s,b)=>s+b.amount,0);
+  const earnedSalary=Math.max(0,paidDays*dailyRate - deductLeaves*dailyRate);
+  // مكافأة الشفت اليومية للشفت 6م-4ص
+  const shiftInfo=SHIFTS[emp.sh]||{};
+  let dailyShiftBon=0;
+  if(shiftInfo.bonusType==='daily'&&shiftInfo.dailyBonus){
+    dailyShiftBon=daysPresent*(shiftInfo.dailyBonus);
+  }
+  const shiftBonTotal=(emp.bon||[]).filter(b=>b.type==='shift'&&b.date>=ps&&b.date<=pe).reduce((s,b)=>s+b.amount,0)+dailyShiftBon;
   const salesBonTotal=(emp.bon||[]).filter(b=>(b.type==='sales100'||b.type==='sales200')&&b.date>=ps&&b.date<=pe).reduce((s,b)=>s+b.amount,0);
   const otherBonTotal=(emp.bon||[]).filter(b=>b.type==='custom'&&b.date>=ps&&b.date<=pe).reduce((s,b)=>s+b.amount,0);
   const totalBon=shiftBonTotal+salesBonTotal+otherBonTotal;
   const totalDed=(emp.ded||[]).filter(d=>d.date>=ps&&d.date<=pe).reduce((s,d)=>s+d.amount,0);
-  const net=Math.max(0,earnedSalary)+totalBon-totalDed;
-  return{per,dailyRate,daysPresent,daysAbsent:0,elapsed:daysPresent+leavesUsed,leavesUsed,paidLeaves,deductLeaves,deductDays,paidDays,earnedSalary:Math.max(0,earnedSalary),shiftBonTotal,salesBonTotal,otherBonTotal,totalBon,totalDed,net};
+  const net=earnedSalary+totalBon-totalDed;
+  return{per,dailyRate,daysPresent,daysAbsent:0,elapsed:daysPresent+leavesUsed,leavesUsed,paidLeaves,deductLeaves,deductDays:deductLeaves,paidDays,earnedSalary,shiftBonTotal,salesBonTotal,otherBonTotal,totalBon,totalDed,net,dailyShiftBon};
 }
 
 // ═══════════════════════════════════════════════════
@@ -2610,7 +2621,7 @@ function renderEmpArchive(eid){
   c.innerHTML=periods.map(per=>{
     const empData=per.employees.find(e=>e.id===eid);
     if(!empData)return'';
-    return`<div class="arch-period" onclick="showEmpArchDetail('${per.key}','${eid}')">
+    return `<div class="arch-period" onclick="showEmpArchDetail('${per.key}','${eid}')">
       <div class="arch-ph">
         <div><div style="font-size:14px;font-weight:700">${per.label}</div><div style="font-size:11px;color:var(--t2);margin-top:3px">يوم الصرف: ${fmtD(per.payDate)}</div></div>
         <div style="text-align:left"><div class="gnum" style="font-size:16px">${fmtN(empData.net)} د.ع</div><div style="font-size:11px;color:var(--t2)">${empData.daysPresent} يوم حضور</div></div>
@@ -2779,7 +2790,7 @@ function renderQuickAtt(emps,att,today){
       tag='<span class="tag tp">حاضر ▶</span>';
       ciTime=lastCI.time;
     }
-    return`<tr>
+    return `<tr>
       <td><div class="tname"><div class="eav">${e.name[0]}</div>${e.name}</div></td>
       <td><span class="shbadge">${shiftLabel(e)}</span></td>
       <td>${ciTime}</td><td>${coTime}</td><td>${dur}</td><td>${tag}</td>
@@ -2798,7 +2809,7 @@ function renderEmpTable(){
     const ci=att.find(a=>a.eid===e.id&&a.date===today&&a.type==='ci');
     const co=att.find(a=>a.eid===e.id&&a.date===today&&a.type==='co');
     const tag=co?'<span class="tag tc">انصرف</span>':ci?'<span class="tag tp">حاضر</span>':'<span class="tag ta">غائب</span>';
-    return`<tr><td>${i+1}</td>
+    return `<tr><td>${i+1}</td>
       <td><div class="tname"><div class="eav">${e.name[0]}</div><div><div>${e.name}</div><div class="muted">${e.u}</div></div></div></td>
       <td><code style="background:var(--bg2);padding:2px 6px;border-radius:4px;font-size:11px">${e.u}</code></td>
       <td><span class="shbadge">${shiftLabel(e)}</span></td>
@@ -2819,7 +2830,7 @@ function renderSalTable(){
   const emps=DB.get('emps')||[];
   tb.innerHTML=emps.map(e=>{
     const c=calcSalary(e);
-    return`<tr>
+    return `<tr>
       <td><div class="tname"><div class="eav">${e.name[0]}</div>${e.name}</div></td>
       <td><span class="gnum">${fmtN(e.sal)}</span></td>
       <td><span class="tgrn bold">${fmtN(c.earnedSalary)}</span></td>
@@ -2837,7 +2848,7 @@ function renderShTable(){
   const emps=DB.get('emps')||[];
   tb.innerHTML=emps.map(e=>{
     const sh=SHIFTS[e.sh]||{};
-    return`<tr>
+    return `<tr>
       <td><div class="tname"><div class="eav">${e.name[0]}</div>${e.name}</div></td>
       <td><span class="shbadge">${shiftLabel(e)}</span></td>
       <td>${sh.full?'<span class="tgld bold">كامل</span>':'<span class="tcyn">نصفي</span>'}</td>
@@ -2933,7 +2944,7 @@ function renderAdminArchive(){
     const empsToShow=filterEmpId?per.employees.filter(e=>e.id===filterEmpId):per.employees;
     if(!empsToShow.length)return'';
     const totalNet=empsToShow.reduce((s,e)=>s+e.net,0);
-    return`<div class="arch-period" onclick="showAdminArchDetail('${per.key}')">
+    return `<div class="arch-period" onclick="showAdminArchDetail('${per.key}')">
       <div class="arch-ph">
         <div>
           <div style="font-size:14px;font-weight:700">🗄️ ${per.label}</div>
@@ -3254,7 +3265,7 @@ function renderDBon(emp){
   const bon=emp.bon||[];
   c.innerHTML=bon.length?[...bon].reverse().map((b,ri)=>{
     const i=bon.length-1-ri;
-    return`<div class="bi"><div><div class="br2">${b.note||b.type}</div><div class="bd">${fmtD(b.date)}</div></div>
+    return `<div class="bi"><div><div class="br2">${b.note||b.type}</div><div class="bd">${fmtD(b.date)}</div></div>
       <div class="flex g8" style="align-items:center"><div class="ba">+${fmtN(b.amount)} د.ع</div>
       <button class="btn btn-dn btn-sm btn-ic" onclick="rmBon(${i})" title="إلغاء الحافز">🗑️</button></div></div>`;
   }).join(''):`<div class="empty" style="padding:20px"><div class="ei">🎁</div><p>لا توجد حوافز</p></div>`;
@@ -3265,7 +3276,7 @@ function renderDDed(emp){
   const ded=emp.ded||[];
   c.innerHTML=ded.length?[...ded].reverse().map((d,ri)=>{
     const i=ded.length-1-ri;
-    return`<div class="di"><div><div class="br2">${d.reason}</div><div class="dd">${fmtD(d.date)}</div></div>
+    return `<div class="di"><div><div class="br2">${d.reason}</div><div class="dd">${fmtD(d.date)}</div></div>
       <div class="flex g8" style="align-items:center"><div class="da">-${fmtN(d.amount)} د.ع</div>
       <button class="btn btn-dn btn-sm btn-ic" onclick="rmDed(${i})">🗑️</button></div></div>`;
   }).join(''):`<div class="empty" style="padding:20px"><div class="ei">✅</div><p>لا توجد خصومات</p></div>`;
@@ -3276,9 +3287,10 @@ function addBonD(){
   const custom=parseInt(document.getElementById('dbCustomAmt').value)||0;
   const note=document.getElementById('dbNote').value.trim();
   let amount,nm;
-  if(type==='sales100'){amount=INC100;nm='حافز 100 قطعة';}
-  else if(type==='sales200'){amount=INC200;nm='حافز 200 قطعة';}
+  if(type==='sales100'){amount=INC100;nm='حافز 100 قطعة جبن';}
+  else if(type==='sales200'){amount=INC200;nm='حافز 200 قطعة جبن';}
   else if(type==='shift'){amount=SHIFT_BON;nm='دوام كامل';}
+  else if(type==='shiftcustom'){amount=custom;nm='حافز شفتات مخصص';}
   else{amount=custom;nm='حافز مخصص';}
   if(!amount){showToast('أدخل مبلغاً صحيحاً','e');return}
   const emps=DB.get('emps')||[], i=emps.findIndex(e=>e.id===DID); if(i===-1)return;
@@ -3382,8 +3394,8 @@ function showDTab(id,el){
 function qInc(type){
   const empId=document.getElementById('incEmpSel').value; if(!empId){showToast('اختر موظفاً','e');return}
   let amount,nm;
-  if(type==='sales100'){amount=INC100;nm='حافز 100 قطعة';}
-  else if(type==='sales200'){amount=INC200;nm='حافز 200 قطعة';}
+  if(type==='sales100'){amount=INC100;nm='حافز 100 قطعة جبن';}
+  else if(type==='sales200'){amount=INC200;nm='حافز 200 قطعة جبن';}
   else{amount=SHIFT_BON;nm='دوام كامل';}
   const emps=DB.get('emps')||[], i=emps.findIndex(e=>e.id===empId); if(i===-1)return;
   if(!emps[i].bon)emps[i].bon=[];
@@ -4102,8 +4114,24 @@ function renderEmpChat(){
   c.innerHTML=chat.map(m=>{
     const mine=emp&&m.uid===emp.id;
     const isAdmin=m.role==='admin';
-    return`<div class="chat-bubble ${mine?'mine':isAdmin?'other admin-bubble':'other'}">
-      <div class="chat-sender ${isAdmin?'admin-s':''}">${mine?'أنت':m.uname}</div>
+    const canDelete=mine;
+    const av=getEmpAvatar(m.uid,m.uname,32);
+    const delBtn=canDelete?`<button onclick="deleteChatMsg('${m.id}','emp')" style="background:none;border:none;cursor:pointer;font-size:11px;color:var(--red);opacity:.6;padding:2px 4px;margin-top:2px" title="حذف">🗑️</button>`:'';
+    if(mine){
+      return `<div class="chat-bubble mine" style="display:flex;flex-direction:column;align-items:flex-end">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px">
+          <span class="chat-sender" style="font-size:10px">أنت</span>
+          ${av}
+        </div>
+        <div>${m.text}</div>
+        <div style="display:flex;align-items:center;gap:4px"><div class="chat-time">${m.time}</div>${delBtn}</div>
+      </div>`;
+    }
+    return `<div class="chat-bubble ${isAdmin?'other admin-bubble':'other'}" style="display:flex;flex-direction:column;align-items:flex-start">
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px">
+        ${av}
+        <span class="chat-sender ${isAdmin?'admin-s':''}" style="font-size:10px">${m.uname}</span>
+      </div>
       <div>${m.text}</div>
       <div class="chat-time">${m.time}</div>
     </div>`;
@@ -4116,10 +4144,25 @@ function renderAdminChat(){
   if(!chat.length){c.innerHTML='<div style="text-align:center;color:var(--t3);padding:30px;font-size:12px">لا توجد رسائل بعد 💬</div>';return;}
   c.innerHTML=chat.map(m=>{
     const mine=m.role==='admin';
-    return`<div class="chat-bubble ${mine?'mine':'other'}">
-      <div class="chat-sender ${mine?'':''}" style="color:${mine?'var(--gold)':'var(--cyan)'}">${mine?'أنت (المدير)':m.uname}</div>
+    const av=getEmpAvatar(m.uid,m.uname,32);
+    const delBtn=`<button onclick="deleteChatMsg('${m.id}','admin')" style="background:none;border:none;cursor:pointer;font-size:11px;color:var(--red);opacity:.6;padding:2px 4px;margin-top:2px" title="حذف">🗑️</button>`;
+    if(mine){
+      return `<div class="chat-bubble mine" style="display:flex;flex-direction:column;align-items:flex-end">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px">
+          <span class="chat-sender" style="color:var(--gold);font-size:10px">أنت (المدير)</span>
+          <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold2));display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#1a1200;flex-shrink:0">م</div>
+        </div>
+        <div>${m.text}</div>
+        <div style="display:flex;align-items:center;gap:4px"><div class="chat-time">${m.time}</div>${delBtn}</div>
+      </div>`;
+    }
+    return `<div class="chat-bubble other" style="display:flex;flex-direction:column;align-items:flex-start">
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px">
+        ${av}
+        <span class="chat-sender" style="color:var(--cyan);font-size:10px">${m.uname}</span>
+      </div>
       <div>${m.text}</div>
-      <div class="chat-time">${m.time}</div>
+      <div style="display:flex;align-items:center;gap:4px"><div class="chat-time">${m.time}</div>${delBtn}</div>
     </div>`;
   }).join('');
   c.scrollTop=c.scrollHeight;
@@ -4179,58 +4222,58 @@ function getBotAnswer(q){
 
   // راتب
   if(has('راتب','مرتب','أجر','اجر','فلوس','مبلغ','مكتسب','صافي','صالح')){
-    if(has('يوم','يومي','يوميه'))return`💰 معدل يومك: <strong>${fmtN(c.dailyRate)} د.ع</strong>`;
-    if(has('شهر','شهري'))return`💰 راتبك الشهري: <strong>${fmtN(emp.sal)} د.ع</strong>\nالمكتسب الآن: <strong>${fmtN(c.earnedSalary)} د.ع</strong>`;
-    return`💰 <strong>راتبك الآن:</strong>\n• الراتب الشهري: ${fmtN(emp.sal)} د.ع\n• المكتسب: ${fmtN(c.earnedSalary)} د.ع\n• الحوافز: +${fmtN(c.totalBon)} د.ع\n• الخصومات: -${fmtN(c.totalDed)} د.ع\n• <strong>الإجمالي: ${fmtN(c.net)} د.ع</strong>`;
+    if(has('يوم','يومي','يوميه'))return `💰 معدل يومك: <strong>${fmtN(c.dailyRate)} د.ع</strong>`;
+    if(has('شهر','شهري'))return `💰 راتبك الشهري: <strong>${fmtN(emp.sal)} د.ع</strong>\nالمكتسب الآن: <strong>${fmtN(c.earnedSalary)} د.ع</strong>`;
+    return `💰 <strong>راتبك الآن:</strong>\n• الراتب الشهري: ${fmtN(emp.sal)} د.ع\n• المكتسب: ${fmtN(c.earnedSalary)} د.ع\n• الحوافز: +${fmtN(c.totalBon)} د.ع\n• الخصومات: -${fmtN(c.totalDed)} د.ع\n• <strong>الإجمالي: ${fmtN(c.net)} د.ع</strong>`;
   }
   // حضور
   if(has('حضور','حضرت','جيت','أيام','ايام','يوم حضر')){
-    return`📅 حضرت <strong>${c.daysPresent} يوم</strong> في هذه الفترة (${c.per.label})`;
+    return `📅 حضرت <strong>${c.daysPresent} يوم</strong> في هذه الفترة (${c.per.label})`;
   }
   // غياب
   if(has('غياب','غبت','تغيبت','مو حاضر','ما جيت','غائب')){
-    return`❌ أيام الغياب/الخصم: <strong>${c.deductDays} يوم</strong>`;
+    return `❌ أيام الغياب/الخصم: <strong>${c.deductDays} يوم</strong>`;
   }
   // إجازة
   if(has('إجازة','اجازة','إجازات','اجازات','عطلة','راحة','بقيلي')){
     const remaining=Math.max(0,2-c.leavesUsed);
-    return`🌴 الإجازات المستخدمة: ${c.leavesUsed}\nالإجازات المجانية: 2 لكل فترة\nالمتبقية: <strong>${remaining} إجازة</strong>`;
+    return `🌴 الإجازات المستخدمة: ${c.leavesUsed}\nالإجازات المجانية: 2 لكل فترة\nالمتبقية: <strong>${remaining} إجازة</strong>`;
   }
   // صرف / يوم صرف
   if(has('صرف','موعد','متى','متى يصرف','يوم دفع','اليوم')){
-    return`💸 يوم صرف راتبك: <strong>${c.per.pay.toLocaleDateString('ar-IQ',{weekday:'long',day:'numeric',month:'long'})}</strong>`;
+    return `💸 يوم صرف راتبك: <strong>${c.per.pay.toLocaleDateString('ar-IQ',{weekday:'long',day:'numeric',month:'long'})}</strong>`;
   }
   // حوافز
   if(has('حافز','حوافز','مكافأ','مكافآت','بونس','زيادة')){
-    return`🎁 حوافزك هذه الفترة: <strong>+${fmtN(c.totalBon)} د.ع</strong>\n• حوافز الشفت: ${fmtN(c.shiftBonTotal)}\n• حوافز المبيعات: ${fmtN(c.salesBonTotal)}\n• حوافز أخرى: ${fmtN(c.otherBonTotal)}`;
+    return `🎁 حوافزك هذه الفترة: <strong>+${fmtN(c.totalBon)} د.ع</strong>\n• حوافز الشفت: ${fmtN(c.shiftBonTotal)}\n• حوافز المبيعات: ${fmtN(c.salesBonTotal)}\n• حوافز أخرى: ${fmtN(c.otherBonTotal)}`;
   }
   // خصومات
   if(has('خصم','خصومات','مخصوم','طرح')){
-    return`📉 الخصومات هذه الفترة: <strong>-${fmtN(c.totalDed)} د.ع</strong>`;
+    return `📉 الخصومات هذه الفترة: <strong>-${fmtN(c.totalDed)} د.ع</strong>`;
   }
   // شفت
   if(has('شفت','دوام','وقت','متى يبدأ','يبدأ','وقتي','ساعات')){
-    return`⏰ شفتك: <strong>${shiftLabel(emp)}</strong>`;
+    return `⏰ شفتك: <strong>${shiftLabel(emp)}</strong>`;
   }
   // هل أنا مسجل اليوم
   if(has('سجلت','مسجل','حضوري اليوم','اليوم')){
     const ci=att.find(a=>a.eid===emp.id&&a.date===sd&&a.type==='ci');
     const co=att.find(a=>a.eid===emp.id&&a.date===sd&&a.type==='co');
-    if(co)return`✅ سجّلت الحضور الساعة ${ci?.time} وانصرفت الساعة ${co.time}`;
-    if(ci)return`✅ سجّلت الحضور اليوم الساعة ${ci.time} — لم تسجل الانصراف بعد`;
-    return`⚪ لم تسجل حضورك بعد اليوم`;
+    if(co)return `✅ سجّلت الحضور الساعة ${ci?.time} وانصرفت الساعة ${co.time}`;
+    if(ci)return `✅ سجّلت الحضور اليوم الساعة ${ci.time} — لم تسجل الانصراف بعد`;
+    return `⚪ لم تسجل حضورك بعد اليوم`;
   }
   // الفترة
   if(has('فترة','نصف شهر','من لـ','من لغاية')){
-    return`📆 الفترة الحالية: <strong>${c.per.label}</strong>\n(${c.per.start.toLocaleDateString('ar-IQ')} — ${c.per.end.toLocaleDateString('ar-IQ')})`;
+    return `📆 الفترة الحالية: <strong>${c.per.label}</strong>\n(${c.per.start.toLocaleDateString('ar-IQ')} — ${c.per.end.toLocaleDateString('ar-IQ')})`;
   }
   // تحية
   if(has('مرحبا','هلا','اهلا','هاي','hi','hello','السلام')){
     const h=new Date().getHours();
-    return`${h<12?'صباح الخير':h<17?'مساء الخير':'ليلة سعيدة'} ${emp.name}! 😊 كيف أساعدك؟`;
+    return `${h<12?'صباح الخير':h<17?'مساء الخير':'ليلة سعيدة'} ${emp.name}! 😊 كيف أساعدك؟`;
   }
   // default
-  return`🤖 عذراً، لم أفهم سؤالك تماماً.\nيمكنك سؤالي عن:\n• راتبك ومكتسباتك\n• أيام حضورك وغيابك\n• إجازاتك\n• موعد صرف الراتب\n• حوافزك\n• شفتك`;
+  return `🤖 عذراً، لم أفهم سؤالك تماماً.\nيمكنك سؤالي عن:\n• راتبك ومكتسباتك\n• أيام حضورك وغيابك\n• إجازاتك\n• موعد صرف الراتب\n• حوافزك\n• شفتك`;
 }
 
 // ══════════════════════════════════════════════════════
@@ -4422,7 +4465,7 @@ function renderAdminAtt(){
   tb.innerHTML=att.length?att.map(a=>{
     const isCI=a.type==='ci';
     const isEarlyOut=!isCI&&a.durMins&&a.durMins<240;
-    return`<tr ${isEarlyOut?'style="background:rgba(233,69,96,.04)"':''}>
+    return `<tr ${isEarlyOut?'style="background:rgba(233,69,96,.04)"':''}>
       <td><div class="tname"><div class="eav">${(a.ename||'?')[0]}</div><span style="font-weight:600">${a.ename||'؟'}</span></div></td>
       <td>${isCI?'<span class="tag tp">✅ حضور</span>':isEarlyOut?'<span class="tag ta">🚪 انصراف مبكر</span>':'<span class="tag tc">🚪 انصراف</span>'}</td>
       <td>${fmtD(a.date)}</td>
@@ -4666,7 +4709,7 @@ function renderEmpLoanHistory(){
   const stMap={pending:{t:'⏳ بانتظار الموافقة',col:'var(--gold)'},approved:{t:'✅ تمت الموافقة',col:'var(--green)'},rejected:{t:'❌ مرفوض',col:'var(--red)'},deducted:{t:'💰 مخصوم من الراتب',col:'var(--cyan)'}};
   c.innerHTML=loans.map(l=>{
     const s=stMap[l.status]||stMap.pending;
-    return`<div style="background:var(--bg3);border:1px solid var(--br);border-radius:12px;padding:12px 14px;margin-bottom:10px">
+    return `<div style="background:var(--bg3);border:1px solid var(--br);border-radius:12px;padding:12px 14px;margin-bottom:10px">
       <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">
         <div style="font-size:14px;font-weight:800;color:var(--gold)">${fmtN(l.amount)} د.ع</div>
         <span style="font-size:11px;font-weight:700;color:${s.col}">${s.t}</span>
@@ -4808,7 +4851,7 @@ function renderShiftSchedule(){
       ${days.map(d=>{
         const ds=d.toISOString().split('T')[0];
         const isToday=ds===todayStr2;
-        return`<th style="text-align:center;padding:8px 6px;border-bottom:1px solid var(--br);white-space:nowrap;min-width:110px;${isToday?'background:rgba(0,229,255,.06)':''}">
+        return `<th style="text-align:center;padding:8px 6px;border-bottom:1px solid var(--br);white-space:nowrap;min-width:110px;${isToday?'background:rgba(0,229,255,.06)':''}">
           <div style="font-size:10px;color:${isToday?'var(--cyan)':'var(--t3)'};">${dayNames[d.getDay()]}</div>
           <div style="font-weight:800;color:${isToday?'var(--cyan)':'var(--t1)'}">${d.getDate()}/${d.getMonth()+1}</div>
           ${isToday?'<div style="font-size:9px;color:var(--cyan)">اليوم</div>':''}
@@ -4831,7 +4874,7 @@ function renderShiftSchedule(){
         const from=dayShift.sh==='custom'?(dayShift.customFrom||'--'):(sh.s||'--');
         const to=dayShift.sh==='custom'?(dayShift.customTo||'--'):(sh.e||'--');
         const shName=dayShift.sh==='custom'?'مخصص':sh.name||dayShift.sh;
-        return`<td style="text-align:center;padding:5px 4px;border-bottom:1px solid rgba(255,255,255,.04);${isToday?'background:rgba(0,229,255,.04)':''}">
+        return `<td style="text-align:center;padding:5px 4px;border-bottom:1px solid rgba(255,255,255,.04);${isToday?'background:rgba(0,229,255,.04)':''}">
           <div style="background:rgba(240,192,64,.08);border:1px solid rgba(240,192,64,.18);border-radius:8px;padding:5px 3px;cursor:pointer;transition:.15s"
                onclick="openDayShiftEdit('${e.id}','${e.name}','${ds}')"
                title="اضغط لتعديل الشفت">
@@ -4904,7 +4947,7 @@ function renderEmpSchedule(){
       const to=dayShift.sh==='custom'?(dayShift.customTo||'--'):(sh.e||'--');
       const shName=dayShift.sh==='custom'?'وقت مخصص':sh.name||dayShift.sh;
       const isFull=sh.full||false;
-      return`<div style="background:${isToday?'rgba(0,229,255,.08)':'var(--bg2)'};border:${isToday?'2px solid rgba(0,229,255,.4)':'1px solid var(--br)'};border-radius:14px;padding:14px 16px;margin-bottom:10px">
+      return `<div style="background:${isToday?'rgba(0,229,255,.08)':'var(--bg2)'};border:${isToday?'2px solid rgba(0,229,255,.4)':'1px solid var(--br)'};border-radius:14px;padding:14px 16px;margin-bottom:10px">
         <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
           <div>
             <div style="font-size:14px;font-weight:800;color:${isToday?'var(--cyan)':'var(--t1)'}">${dayNames[d.getDay()]} ${d.getDate()}/${d.getMonth()+1} ${isToday?'<span style="color:var(--cyan);font-size:11px">(اليوم)</span>':''}</div>
@@ -5095,7 +5138,7 @@ function adminManualAttMulti(){
   container.innerHTML=days.map(d=>{
     const isReg=registeredDays.has(d);
     const dayName=new Date(d+'T00:00:00').toLocaleDateString('ar-IQ',{weekday:'short',day:'numeric',month:'numeric'});
-    return`<label style="display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;cursor:${isReg?'default':'pointer'};background:${isReg?'rgba(0,230,118,.08)':'var(--bg3)'};border:1px solid ${isReg?'rgba(0,230,118,.3)':'var(--br)'};opacity:${isReg?'0.6':'1'}">
+    return `<label style="display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;cursor:${isReg?'default':'pointer'};background:${isReg?'rgba(0,230,118,.08)':'var(--bg3)'};border:1px solid ${isReg?'rgba(0,230,118,.3)':'var(--br)'};opacity:${isReg?'0.6':'1'}">
       <input type="checkbox" value="${d}" ${isReg?'checked disabled':''} style="accent-color:var(--green);width:15px;height:15px">
       <span style="font-size:12px;${isReg?'color:var(--green)':''}">${dayName}${isReg?' ✅':''}</span>
     </label>`;
@@ -5195,7 +5238,7 @@ function renderMonthAttGrid(emps,att,ps,pe,today){
     else if(pres>0){bg='rgba(240,192,64,.2)';color='var(--gold)';title=`${d} — ${pres}/${emps.length} حضروا`;}
     else if(onLeave>0){bg='rgba(206,147,216,.25)';color='var(--purple)';title=`${d} — ${onLeave} مجاز 🌴`;}
     else{bg='var(--bg3)';color='var(--t3)';title=`${d} — لا يوجد`;}
-    return`<div title="${title}" style="width:30px;height:30px;border-radius:6px;background:${bg};color:${color};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;cursor:default">${dayNum}</div>`;
+    return `<div title="${title}" style="width:30px;height:30px;border-radius:6px;background:${bg};color:${color};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;cursor:default">${dayNum}</div>`;
   }).join('');
 }
 
@@ -5220,13 +5263,10 @@ function addLeaveDayAdmin(){
   if(!emp)return;
   let leaves=DB.get('leaveDays')||[];
   if(leaves.some(l=>l.eid===eid&&l.date===date)){showToast('هذا اليوم مسجل مسبقاً','e');return;}
+  // الإجازة المدفوعة تُحتسب كيوم واحد فقط (من leaveDays) — لا تُضاف لـ lvM لتجنب الحساب المزدوج
   leaves.push({id:genId(),eid,ename:emp.name,date,paid,addedAt:new Date().toISOString()});
   DB.set('leaveDays',leaves);
-  // إذا مدفوعة — أضف للـ lvM
-  if(paid){
-    const ei=emps.findIndex(e=>e.id===eid);
-    if(ei!==-1){emps[ei].lvM=(emps[ei].lvM||0)+1;DB.set('emps',emps);}
-  }
+  // lvM للإجازات المطلوبة من الموظف نفسه فقط — هنا المدير يضيفها مباشرة بدون lvM
   addAdminLog('leave_add',`إجازة ${paid?'مدفوعة':'غير مدفوعة'}: ${emp.name} — ${date}`,{eid,date});
   showToast(`✅ تم تسجيل إجازة ${emp.name} — ${fmtD(date)}`,'s');
   renderLeaveMgmtList();
@@ -5561,9 +5601,352 @@ if(__origLoadEmpScreen){
   };
 }
 
+
+// ══════════════════════════════════════════════════════
+//  CUSTOM SHIFTS — إضافة شفتات جديدة
+// ══════════════════════════════════════════════════════
+function openAddShiftModal(){openModal('addShiftModal');}
+function saveNewShift(){
+  const name=document.getElementById('newShiftName').value.trim();
+  const from=document.getElementById('newShiftFrom').value;
+  const to=document.getElementById('newShiftTo').value;
+  const bonType=document.getElementById('newShiftBonType').value;
+  const bonAmt=parseInt(document.getElementById('newShiftBonAmt').value)||0;
+  if(!name||!from||!to){showToast('أدخل اسم الشفت والأوقات','e');return;}
+  const key=from+'-'+to+(name.replace(/\s/g,'')?'_'+Date.now():'');
+  const customShifts=DB.get('customShifts')||{};
+  const shObj={name,s:from,e:to,h:0,full:bonType==='full',display:name};
+  if(bonType==='daily'){shObj.bonusType='daily';shObj.dailyBonus=bonAmt;shObj.full=false;}
+  customShifts[key]=shObj;
+  DB.set('customShifts',customShifts);
+  _reloadShifts();
+  closeModal('addShiftModal');
+  renderShiftCards();
+  _addShiftToAllDropdowns(key,name);
+  showToast('✅ تم إضافة الشفت: '+name,'s');
+}
+
+function renderShiftCards(){
+  _reloadShifts();
+  const grid=document.getElementById('shiftCardsGrid');if(!grid)return;
+  let html='';
+  Object.entries(SHIFTS).forEach(([k,s])=>{
+    if(k==='custom')return;
+    const bonTxt=s.full?'كامل • +10,000':s.bonusType==='daily'?`يومي • +${(s.dailyBonus||0).toLocaleString('ar-IQ')}`:s.name==='وقت مخصص'?'موافقة المدير':'نصفي';
+    const bc=s.full?'':'';
+    html+=`<div class="shcard"><div class="shn">${s.name}</div><div class="shh">${s.h?s.h+' ساعات':''}</div><div class="shs">${bonTxt}</div></div>`;
+  });
+  html+=`<div class="shcard" style="border-color:rgba(0,229,255,.2)"><div class="shn" style="color:var(--cyan)">وقت مخصص</div><div class="shh">يحدده المدير</div><div class="shs">موافقة المدير</div></div>`;
+  grid.innerHTML=html;
+}
+
+function _addShiftToAllDropdowns(key,name){
+  ['qsShift','dseShift','eShiftInp','neShift'].forEach(id=>{
+    const sel=document.getElementById(id);if(!sel)return;
+    if(!sel.querySelector(`option[value="${key}"]`)){
+      const opt=document.createElement('option');opt.value=key;opt.textContent=name;
+      // Insert before 'custom' option
+      const customOpt=sel.querySelector('option[value="custom"]');
+      if(customOpt)sel.insertBefore(opt,customOpt);
+      else sel.appendChild(opt);
+    }
+  });
+}
+
+// Restore custom shifts into dropdowns on load
+function _restoreCustomShiftsDropdowns(){
+  _reloadShifts();
+  const custom=DB.get('customShifts')||{};
+  Object.entries(custom).forEach(([k,s])=>_addShiftToAllDropdowns(k,s.name));
+}
+
+// ══════════════════════════════════════════════════════
+//  DAILY SCHEDULE PUSH (4 AM notification to employees)
+// ══════════════════════════════════════════════════════
+function pushTomorrowScheduleToChat(){
+  _reloadShifts();
+  const emps=DB.get('emps')||[];
+  const tomorrow=new Date();tomorrow.setDate(tomorrow.getDate()+1);
+  const tStr=tomorrow.toISOString().split('T')[0];
+  const tLabel=tomorrow.toLocaleDateString('ar-IQ',{weekday:'long',day:'numeric',month:'long'});
+  let msg=`📅 جدول دوام ${tLabel}:\n━━━━━━━━━━━━━━\n`;
+  emps.forEach(e=>{
+    const dayShift=getEmpShiftForDay(e,tStr);
+    const sh=SHIFTS[dayShift.sh]||{};
+    let shName;
+    if(dayShift.sh==='on_leave')shName='🌴 إجازة';
+    else if(dayShift.sh==='custom')shName=`مخصص ${dayShift.customFrom}—${dayShift.customTo}`;
+    else shName=sh.name||dayShift.sh;
+    msg+=`👤 ${e.name}: ${shName}\n`;
+  });
+  msg+='━━━━━━━━━━━━━━';
+  // Add to group chat
+  const now=new Date();
+  const chatMsg={id:genId(),uid:'admin',uname:'المدير 👑',role:'admin',text:msg.replace(/\\n/g,'\n'),ts:now.toISOString(),time:fmtT(now),date:todayStr(),isSchedule:true};
+  const chat=DB.get('groupChat')||[];chat.push(chatMsg);DB.set('groupChat',chat);
+  sendTg(msg.replace(/\\n/g,'\n'));
+  renderEmpChat();renderAdminChat();
+}
+
+// ══════════════════════════════════════════════════════
+//  EMPLOYEE PHOTO DISPLAY IN CHAT
+// ══════════════════════════════════════════════════════
+function getEmpAvatar(uid,uname,size){
+  const emps=DB.get('emps')||[];
+  const emp=emps.find(e=>e.id===uid);
+  const photo=emp?.photo;
+  const nm=uname||'؟';
+  if(photo){
+    return `<img src="${photo}" style="width:${size}px;height:${size}px;border-radius:50%;object-fit:cover;flex-shrink:0" alt="${nm}">`;
+  }
+  return `<div style="width:${size}px;height:${size}px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold2));display:flex;align-items:center;justify-content:center;font-size:${Math.round(size*0.45)}px;font-weight:800;color:#1a1200;flex-shrink:0">${nm[0]||'؟'}</div>`;
+}
+
+// ── _reloadShifts ──
+function _reloadShifts(){
+  const custom=DB.get('customShifts')||{};
+  SHIFTS=Object.assign({},SHIFTS_DEFAULT,custom);
+}
+
+// ── deleteChatMsg — حذف رسالة من الدردشة ──
+function deleteChatMsg(id, role){
+  const chat=DB.get('groupChat')||[];
+  const msg=chat.find(m=>m.id===id);
+  if(!msg){showToast('الرسالة غير موجودة','e');return;}
+  // الموظف: يحذف رسالته فقط | المدير: يحذف أي رسالة
+  const emp=getEmp();
+  if(role==='emp' && msg.uid!==emp?.id){showToast('لا يمكنك حذف رسالة شخص آخر','e');return;}
+  if(!confirm('حذف هذه الرسالة؟'))return;
+  const filtered=chat.filter(m=>m.id!==id);
+  DB.set('groupChat',filtered);
+  renderEmpChat();renderAdminChat();
+  showToast('🗑️ تم حذف الرسالة','i');
+}
+
+// ── renderShiftSchedule — show مجاز cell ──
+// (patched below in saveDayShiftEdit)
+
+// ── Tomorrow schedule push — called at 4 AM ──
+function _checkAndPushSchedule(){
+  const now=new Date();
+  if(now.getHours()===4&&now.getMinutes()===0){
+    const key='schpush_'+todayStr();
+    if(!DB.get(key)){DB.set(key,1);pushTomorrowScheduleToChat();}
+  }
+}
+
+// ── Fix renderShiftSchedule for on_leave ──
+const _origRenderShiftSchedule=typeof renderShiftSchedule==='function'?renderShiftSchedule:null;
+function renderShiftSchedule(){
+  _reloadShifts();
+  const c=document.getElementById('shiftScheduleGrid'); if(!c)return;
+  const offset=parseInt(document.getElementById('shWeekOffset')?.value||'0');
+  const emps=DB.get('emps')||[];
+  const days=[];
+  for(let i=0;i<7;i++){
+    const d=new Date(); d.setDate(d.getDate()+offset+i);
+    days.push(d);
+  }
+  const dayNames=['أحد','إثنين','ثلاثاء','أربعاء','خميس','جمعة','سبت'];
+  const todayStr2=todayStr();
+  let html=`<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:12px">
+    <thead><tr>
+      <th style="text-align:right;padding:8px 10px;color:var(--t3);border-bottom:1px solid var(--br);white-space:nowrap;min-width:90px">الموظف</th>
+      ${days.map(d=>{
+        const ds=d.toISOString().split('T')[0];
+        const isToday=ds===todayStr2;
+        return `<th style="text-align:center;padding:8px 6px;border-bottom:1px solid var(--br);white-space:nowrap;min-width:110px;${isToday?'background:rgba(0,229,255,.06)':''}">
+          <div style="font-size:10px;color:${isToday?'var(--cyan)':'var(--t3)'};">${dayNames[d.getDay()]}</div>
+          <div style="font-weight:800;color:${isToday?'var(--cyan)':'var(--t1)'}">${d.getDate()}/${d.getMonth()+1}</div>
+          ${isToday?'<div style="font-size:9px;color:var(--cyan)">اليوم</div>':''}
+        </th>`;
+      }).join('')}
+    </tr></thead>
+    <tbody>
+    ${emps.map(e=>`<tr>
+      <td style="padding:8px 10px;border-bottom:1px solid rgba(255,255,255,.04)">
+        <div style="display:flex;align-items:center;gap:6px">
+          ${getEmpAvatar(e.id,e.name,26)}
+          <span style="font-weight:600;font-size:11px;white-space:nowrap">${e.name}</span>
+        </div>
+      </td>
+      ${days.map(d=>{
+        const ds=d.toISOString().split('T')[0];
+        const isToday=ds===todayStr2;
+        const dayShift=getEmpShiftForDay(e,ds);
+        const isOnLeave=dayShift.sh==='on_leave';
+        const sh=SHIFTS[dayShift.sh]||{};
+        const from=dayShift.sh==='custom'?(dayShift.customFrom||'--'):(sh.s||'--');
+        const to=dayShift.sh==='custom'?(dayShift.customTo||'--'):(sh.e||'--');
+        const shName=dayShift.sh==='custom'?'مخصص':sh.name||dayShift.sh;
+        return `<td style="text-align:center;padding:5px 4px;border-bottom:1px solid rgba(255,255,255,.04);${isToday?'background:rgba(0,229,255,.04)':''}">
+          ${isOnLeave?
+            `<div style="background:rgba(206,147,216,.15);border:1px solid rgba(206,147,216,.35);border-radius:8px;padding:5px 3px;cursor:pointer"
+                 onclick="openDayShiftEdit('${e.id}','${e.name}','${ds}')" title="مجاز">
+              <div style="font-size:13px">🌴</div>
+              <div style="font-size:9px;color:var(--purple);font-weight:700">مجاز</div>
+              <div style="font-size:8px;color:var(--t3)">✏️</div>
+            </div>`:
+            `<div style="background:rgba(240,192,64,.08);border:1px solid rgba(240,192,64,.18);border-radius:8px;padding:5px 3px;cursor:pointer"
+                 onclick="openDayShiftEdit('${e.id}','${e.name}','${ds}')" title="تعديل">
+              <div style="font-size:9px;font-weight:700;color:var(--gold)">${shName}</div>
+              <div style="font-size:9px;color:var(--green)">${from}</div>
+              <div style="font-size:9px;color:var(--cyan)">${to}</div>
+              <div style="font-size:8px;color:var(--t3)">✏️</div>
+            </div>`}
+        </td>`;
+      }).join('')}
+    </tr>`).join('')}
+    </tbody></table></div>`;
+  c.innerHTML=html;
+}
+
+// ── saveDayShiftEdit with leave registration ──
+function saveDayShiftEdit(){
+  const sh=document.getElementById('dseShift').value;
+  const from=document.getElementById('dseFrom').value;
+  const to=document.getElementById('dseTo').value;
+  saveDailyShift(_editDayEmpId,_editDayDate,sh,from,to);
+  if(sh==='on_leave'){
+    const leaveDays=DB.get('leaveDays')||[];
+    if(!leaveDays.some(l=>l.eid===_editDayEmpId&&l.date===_editDayDate)){
+      const emp2=(DB.get('emps')||[]).find(e=>e.id===_editDayEmpId);
+      leaveDays.push({id:genId(),eid:_editDayEmpId,ename:emp2?.name||'',date:_editDayDate,paid:true,byAdmin:true,note:'مجاز جدول الشفتات'});
+      DB.set('leaveDays',leaveDays);
+    }
+  } else {
+    const leaveDays=DB.get('leaveDays')||[];
+    DB.set('leaveDays',leaveDays.filter(l=>!(l.eid===_editDayEmpId&&l.date===_editDayDate&&l.note==='مجاز جدول الشفتات')));
+  }
+  closeModal('dayShiftEditModal');
+  renderShiftSchedule();
+  const emp=(DB.get('emps')||[]).find(e=>e.id===_editDayEmpId);
+  if(emp){
+    const shName=sh==='on_leave'?'🌴 إجازة':sh==='custom'?'مخصص '+from+'—'+to:(SHIFTS[sh]?.name||sh);
+    const msg={id:genId(),eid:emp.id,ename:emp.name,text:'📅 تم تعديل شفتك ليوم '+fmtD(_editDayDate)+' إلى: '+shName,date:todayStr(),time:fmtT(new Date()),ts:new Date().toISOString()};
+    const msgs=DB.get('msg')||[];msgs.push(msg);DB.set('msg',msgs);
+    sendTg('📅 تعديل شفت\n👤 '+emp.name+'\nاليوم: '+fmtD(_editDayDate)+'\nالشفت: '+shName);
+  }
+  renderAdmin();
+  showToast('✅ تم حفظ الشفت','s');
+}
+
+// ── renderMonthAttGrid fix (current month only) ──
+function renderMonthAttGrid(emps,att,ps,pe,today){
+  const grid=document.getElementById('monthAttGrid');
+  const badge=document.getElementById('monthAttBadge');
+  if(!grid)return;
+  const leaveDays=DB.get('leaveDays')||[];
+  const now2=new Date();
+  const currentMonthStart=new Date(now2.getFullYear(),now2.getMonth(),1).toISOString().split('T')[0];
+  const currentMonthEnd=new Date(now2.getFullYear(),now2.getMonth()+1,0).toISOString().split('T')[0];
+  const days=[];
+  let cur=new Date(currentMonthStart+'T00:00:00');
+  while(cur<=new Date(currentMonthEnd+'T00:00:00')){
+    days.push(cur.toISOString().split('T')[0]);
+    cur.setDate(cur.getDate()+1);
+  }
+  let totalPresent=0,totalLeave=0;
+  const dayStats=days.map(d=>{
+    const pres=emps.filter(e=>att.some(a=>a.eid===e.id&&a.date===d&&a.type==='ci')).length;
+    const onLeave=emps.filter(e=>leaveDays.some(l=>l.eid===e.id&&l.date===d)).length;
+    if(d<=today){totalPresent+=pres;totalLeave+=onLeave;}
+    return{d,pres,onLeave};
+  });
+  const passedDays=days.filter(d=>d<=today).length;
+  if(badge)badge.textContent=totalPresent+' تسجيل حضور في '+passedDays+' يوم';
+  grid.innerHTML=dayStats.map(({d,pres,onLeave})=>{
+    const isFuture=d>today;
+    const dayNum=parseInt(d.split('-')[2]);
+    let bg,color,title;
+    if(isFuture){bg='var(--bg3)';color='var(--t3)';title=d;}
+    else if(pres===emps.length&&emps.length>0){bg='rgba(0,230,118,.25)';color='var(--green)';title=d+' — الكل حضروا';}
+    else if(pres>0){bg='rgba(240,192,64,.2)';color='var(--gold)';title=d+' — '+pres+'/'+emps.length;}
+    else if(onLeave>0){bg='rgba(206,147,216,.25)';color='var(--purple)';title=d+' — '+onLeave+' مجاز';}
+    else{bg='var(--bg3)';color='var(--t3)';title=d;}
+    return'<div title="'+title+'" style="width:30px;height:30px;border-radius:6px;background:'+bg+';color:'+color+';display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;cursor:default">'+dayNum+'</div>';
+  }).join('');
+}
+
+// ── renderDayGrid fix (current month only) ──
+function renderDayGrid(eid){
+  const c=document.getElementById('empDG');if(!c)return;
+  const att=DB.get('att')||[];
+  const leaveDays=DB.get('leaveDays')||[];
+  const now=new Date();
+  const monthStart=new Date(now.getFullYear(),now.getMonth(),1);
+  const monthEnd=new Date(now.getFullYear(),now.getMonth()+1,0);
+  const today=todayStr();
+  const days=[];
+  let cur=new Date(monthStart);
+  while(cur<=monthEnd){
+    const ds=cur.toISOString().split('T')[0];
+    const future=ds>today;
+    const hasCI=att.some(a=>a.eid===eid&&a.date===ds&&a.type==='ci');
+    const isLeave=leaveDays.some(l=>l.eid===eid&&l.date===ds)||att.some(a=>a.eid===eid&&a.date===ds&&a.type==='leave');
+    let cls=future?'f':hasCI?'p':isLeave?'lv':'f';
+    days.push('<div class="dc '+cls+'" title="'+fmtD(ds)+'">'+cur.getDate()+'</div>');
+    cur.setDate(cur.getDate()+1);
+  }
+  c.innerHTML=days.join('');
+}
+
+// ── renderEmpAttPattern fix (current month only) ──
+function renderEmpAttPattern(eid){
+  const c=document.getElementById('empAttPattern');if(!c)return;
+  const att=DB.get('att')||[];
+  const leaveDays=DB.get('leaveDays')||[];
+  const now=new Date(),y=now.getFullYear(),m=now.getMonth();
+  const monthStart=new Date(y,m,1);
+  const monthEnd=new Date(y,m+1,0);
+  const today=new Date();today.setHours(23,59,59);
+  let cur=new Date(monthStart);
+  const dots=[];
+  while(cur<=monthEnd){
+    const ds=cur.toISOString().split('T')[0];
+    const future=cur>today;
+    const has=att.some(a=>a.eid===eid&&a.date===ds&&a.type==='ci');
+    const isLeave=leaveDays.some(l=>l.eid===eid&&l.date===ds)||att.some(a=>a.eid===eid&&a.date===ds&&a.type==='leave');
+    const cls=future?'future':has?'present':isLeave?'on-leave':'future';
+    dots.push('<div class="att-dot '+cls+'" title="'+cur.toLocaleDateString('ar-IQ')+'">'+cur.getDate()+'</div>');
+    cur.setDate(cur.getDate()+1);
+  }
+  c.innerHTML=dots.join('');
+}
+
+// ── shiftLabel updated ──
+function shiftLabel(emp){
+  _reloadShifts();
+  if(emp.sh==='custom'&&emp.customFrom&&emp.customTo)return'مخصص '+emp.customFrom+'—'+emp.customTo;
+  return(SHIFTS[emp.sh]||{name:emp.sh||'غير محدد'}).name;
+}
+
+// ── Hook: add _checkAndPushSchedule to timer ──
+const _origStartTimers=window.startTimers;
+window.startTimers=function(){
+  _origStartTimers&&_origStartTimers();
+  setInterval(()=>{try{_checkAndPushSchedule();}catch(e){}},60000);
+};
+
+// ── Hook: restore custom shifts on load ──
+document.addEventListener('DOMContentLoaded',()=>{
+  setTimeout(()=>{
+    try{_reloadShifts();_restoreCustomShiftsDropdowns();}catch(e){}
+    try{renderShiftCards();}catch(e){}
+  },500);
+});
+
+
+function openShiftCustomBon(){
+  // Use cbModal but label it as shift bonus
+  document.querySelector('#cbModal .mh h3').textContent='🎯 حافز شفتات مخصص';
+  document.getElementById('cbReason').placeholder='مثال: شفت ليلي إضافي، تمديد دوام...';
+  openModal('cbModal');
+}
 </script>
 
 <!-- Absent Alert 9AM Modal -->
+
 <div class="mov" id="absentAlertModal">
   <div class="modal" style="max-width:480px">
     <div class="mh"><h3>🔔 تنبيه — الساعة 9 صباحاً</h3><button class="mx" onclick="closeModal('absentAlertModal')">✕</button></div>
@@ -5738,13 +6121,15 @@ if(__origLoadEmpScreen){
     <div class="mb">
       <div class="fg"><label>الشفت الجديد</label>
         <select class="fi" id="dseShift" onchange="document.getElementById('dseCustomWrap').style.display=this.value==='custom'?'flex':'none'">
-          <option value="14:00-02:00">شفت 1 — 2:00ظ إلى 2:00ل (12س)</option>
-          <option value="15:30-03:30">شفت 2 — 3:30ع إلى 3:30ف (12س)</option>
-          <option value="18:00-02:00">نصف شفت 3 — 6م إلى 2ل (8س)</option>
-          <option value="19:00-03:00">نصف شفت 4 — 7م إلى 3ف (8س)</option>
-          <option value="19:30-03:30">نصف شفت 5 — 7:30م إلى 3:30ف (8س)</option>
-          <option value="18:00-03:30">شفت 6 — 6م إلى 3:30ف (9.5س)</option>
+          <option value="14:00-02:00">6 م — 2 ص (12س) • كامل</option>
+          <option value="15:30-03:30">3:30 م — 3:30 ص (12س) • كامل</option>
+          <option value="18:00-02:00">6 م — 2 ص (8س) • نصفي</option>
+          <option value="19:00-03:00">7 م — 3 ص (8س) • نصفي</option>
+          <option value="19:30-03:30">7:30 م — 3:30 ص (8س) • نصفي</option>
+          <option value="18:00-03:30">6 م — 3:30 ص (9.5س) • كامل</option>
+          <option value="18:00-04:00">6 م — 4 ص (10س) • يومي +4,250</option>
           <option value="custom">وقت مخصص</option>
+          <option value="on_leave">🌴 مجاز — يُلغى من الجدول</option>
         </select>
       </div>
       <div id="dseCustomWrap" style="display:none;gap:8px">
@@ -5759,6 +6144,32 @@ if(__origLoadEmpScreen){
   </div>
 </div>
 
+<!-- Add Custom Shift Modal -->
+
+<div class="mov" id="addShiftModal">
+  <div class="modal" style="max-width:420px">
+    <div class="mh"><h3>➕ إضافة شفت جديد</h3><button class="mx" onclick="closeModal('addShiftModal')">✕</button></div>
+    <div class="mb">
+      <div class="fg"><label>اسم الشفت (مثال: 8 م — 4 ص)</label><input type="text" class="fi" id="newShiftName" placeholder="6 م — 4 ص"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="fg"><label>من (صيغة 24س)</label><input type="time" class="fi" id="newShiftFrom" value="18:00"></div>
+        <div class="fg"><label>إلى (صيغة 24س)</label><input type="time" class="fi" id="newShiftTo" value="04:00"></div>
+      </div>
+      <div class="fg"><label>نوع المكافأة</label>
+        <select class="fi" id="newShiftBonType" onchange="document.getElementById('newShiftBonAmtWrap').style.display=this.value!=='none'?'block':'none'">
+          <option value="none">بدون مكافأة</option>
+          <option value="full">كامل — +10,000</option>
+          <option value="daily">يومي — مبلغ لكل يوم حضور</option>
+        </select>
+      </div>
+      <div class="fg" id="newShiftBonAmtWrap" style="display:none"><label>مبلغ المكافأة (د.ع)</label><input type="number" class="fi" id="newShiftBonAmt" placeholder="4250"></div>
+    </div>
+    <div class="mf">
+      <button class="btn btn-sc" onclick="closeModal('addShiftModal')">إلغاء</button>
+      <button class="btn btn-pr" onclick="saveNewShift()">✅ إضافة</button>
+    </div>
+  </div>
+</div>
 </body>
 <footer style="
   text-align:center;
